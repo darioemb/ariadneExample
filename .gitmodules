@@ -1,0 +1,3 @@
+[submodule "release-1.0"]
+	path = release-1.0
+	url = https://bitbucket.org/ariadne-cps/release-1.0
