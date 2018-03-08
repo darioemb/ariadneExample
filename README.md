@@ -22,7 +22,7 @@ make
 make test
 ```
 ```
-make install 
+sudo make install 
 ```
 ```
 export LD_LIBRARY_PATH=/usr/local/lib
