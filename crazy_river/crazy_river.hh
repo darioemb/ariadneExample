@@ -23,8 +23,8 @@ HybridIOAutomaton getSystem()
 	RealParameter S1("S1", 6.28);
 	RealParameter S2("S2", 6.28);
 
-	RealParameter H1("H1", 1);
-	RealParameter H2("H2", 1);
+	RealParameter H1("H1", 7.5);
+	RealParameter H2("H2", 7.5);
 
 	//Automaton
 	HybridIOAutomaton crazy_river("crazy_river");
@@ -49,10 +49,10 @@ HybridIOAutomaton getSystem()
 	crazy_river.new_mode(overflow);
 
 	//dynamics
-	crazy_river.set_dynamics(no_overflow, z1, (1/S1)*((-S01*w1*z1)+(beta1*a1)));
-	crazy_river.set_dynamics(no_overflow, z2, (1/S2)*((-S02*w2*z2)+(beta2*a2)));
-	crazy_river.set_dynamics(overflow, z1, 0);
-	crazy_river.set_dynamics(overflow, z2, (1/S2)*((-S02*w2*z2)+(beta2*a2+beta1*a1-S01*w1*z1)));
+	crazy_river.set_dynamics(no_overflow, z1, (1.0f/S1)*((-S01*w1*z1)+(beta1*a1)));
+	crazy_river.set_dynamics(no_overflow, z2, (1.0f/S2)*((-S02*w2*z2)+(beta2*a2)));
+	crazy_river.set_dynamics(overflow, z1, -a1);
+	crazy_river.set_dynamics(overflow, z2, (1.0f/S2)*((-S02*w2*z2)+(beta2*a2+beta1*a1-S01*w1*z1)));
 
 	//guards
 	RealExpression guard1 = z1-H1; //!< z>=H1
@@ -60,11 +60,12 @@ HybridIOAutomaton getSystem()
 
 	std::map<RealVariable, RealExpression> reset1;
 	reset1[z1]=z1;
+	reset1[z2]=z2;
 	std::map<RealVariable, RealExpression> reset2;
 	reset2[z2]=z2;
 
 	crazy_river.new_forced_transition(e_overflow, no_overflow, overflow, reset1, guard1);
-	crazy_river.new_forced_transition(e_no_overflow, overflow, no_overflow, reset2, guard2);
+	crazy_river.new_forced_transition(e_no_overflow, overflow, no_overflow, reset1, guard2);
 
 	return crazy_river;
 
