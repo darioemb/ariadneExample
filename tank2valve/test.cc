@@ -20,5 +20,7 @@ int main(int argc,char *argv[])
     initial_set[DiscreteLocation("flow,i_idle,o_idle,i_falling,o_falling")] = Box(3, 0.0,0.0, 1.0,1.0, 6.0,7.5);
 
     analyse(system,initial_set,verb,plot_results);
+    
+    return 0;
 }
 

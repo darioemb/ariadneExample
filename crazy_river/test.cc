@@ -1,46 +1,25 @@
-#include<ariadne.h>
-#include"crazy_river.hh"
+#include <ariadne.h>
+#include "crazy_river.hh"
+#include "analysis.hh" // Custom analysis routines to be run
 
-#include<iostream>
-
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	HybridIOAutomaton crazy_river=getSystem();
+    int verb = 0;
+    if (argc > 1)
+        verb = atoi(argv[1]);
 
-	std::cout<<"Automaton: "<<crazy_river<<"\n";
+    bool plot_results = true;
 
-	HybridBoundedConstraintSet initial_set(crazy_river.state_space());
+    HybridIOAutomaton system = Ariadne::getSystem();
 
-	initial_set[DiscreteLocation("no_overflow")]=Box(2, 0.0f, 0.0f, 6.0f, 7.5f);
+    cout << system << endl;
 
-	HybridEvolver evolver(crazy_river);
-	evolver.settings().set_maximum_step_size(0.3);
+    HybridBoundedConstraintSet initial_set(system.state_space());
+    initial_set[DiscreteLocation("no_overflow,i_idle,i_rising")] = Box(3, 1.0, 1.0, 6.0, 7.5, 6.0, 7.5);
+    initial_set[DiscreteLocation("no_overflow,i_idle,i_falling")] = Box(3, 0.0, 0.0, 6.0, 7.5, 6.0, 7.5);
+   // initial_set[DiscreteLocation("overflow,i_idle,i_rising")] = Box(3, 1.0, 1.0, 6.0, 7.5, 6.0, 7.5);
+   // initial_set[DiscreteLocation("overflow,i_idle,i_falling")] = Box(3, 0.0, 0.0, 6.0, 7.5, 6.0, 7.5);
 
-	evolver.verbosity=1;
-	HybridEvolver::EnclosureListType initial_enclosures;
-	HybridBoxes initial_set_domain = initial_set.domain();
-	for(HybridBoxes::const_iterator it=initial_set_domain.locations_begin();it!=initial_set_domain.locations_end();++it)
-	{
-		if(!it->second.empty())
-			initial_enclosures.adjoin(HybridEvolver::EnclosureType(it->first, Box(it->second.centre())));
-	}
-
-	std::cout<<"initial enclosures: "<<initial_enclosures<<"\n";
-	std::cout<<"initial set_domain: "<<initial_set_domain<<"\n";
-	std::cout<<"initial set: "<<initial_set<<"\n";
-
-	HybridTime evol_limits(30.0, 10);
-
-	HybridEvolver::EnclosureListType reach;
-	for(HybridEvolver::EnclosureListType::const_iterator it=initial_enclosures.begin();it!=initial_enclosures.end();++it)
-	{
-		HybridEvolver::OrbitType orbit=evolver.orbit(*it, evol_limits, UPPER_SEMANTICS);
-		reach.adjoin(orbit.reach());
-	}
-
-	PlotHelper plotter(crazy_river);
-//	plotter.plot(reach, "crazy_river");
-
-	return 0;
+    analyse(system, initial_set, verb, plot_results);
+    return 0;
 }
