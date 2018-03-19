@@ -148,7 +148,7 @@ void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface& system, Hyb
     HybridBoxes domain(system.state_space(),Box(3, 0.0,1.0, 6.0,7.5, 6.0,7.5));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
-    int accuracy = 1;
+    int accuracy = 2;
 
     // Creates an analyser with the required arguments
     HybridReachabilityAnalyser analyser(system,domain,accuracy);
