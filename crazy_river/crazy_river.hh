@@ -10,20 +10,20 @@ HybridIOAutomaton getSystem()
 {
 	//System variables
 	RealVariable a1("a1");
-	RealVariable z1("z1");
 	RealVariable a2("a2");
+	RealVariable z1("z1");
 	RealVariable z2("z2");
 
 	//System parameters
-	RealParameter alpha1("alpha1", 0.2);
-	RealParameter alpha2("alpha2", 0.2);
-	RealParameter beta1("beta1", 2);
-	RealParameter beta2("beta2", 2);
+	RealParameter alpha1("alpha1", 0.02);
+	RealParameter alpha2("alpha2", 0.02);
+	RealParameter beta1("beta1", 0.1);
+	RealParameter beta2("beta2", 0.1);
 	RealParameter T("T", 4.0);
-	RealParameter hmin("hmin", 5.75);
-	RealParameter hmax("hmax", 7.75);
+	RealParameter hmin("hmin", 1.0);
+	RealParameter hmax("hmax", 2.0);
 	RealParameter delta("delta", 0.1);
-	RealParameter H("H", 7.74);
+	RealParameter H("H", 1.90);
 
 	// 1.Automaton registration
 	HybridIOAutomaton crazy_river("crazy_river");
@@ -48,10 +48,10 @@ HybridIOAutomaton getSystem()
 	crazy_river.new_mode(overflow);
 
 	// 5.Registration of dynamics
-	crazy_river.set_dynamics(no_overflow, z1, -alpha1 * z1 + beta1 * a1);
-	crazy_river.set_dynamics(no_overflow, z2, -alpha2 * z2 + beta2 * a2);
+	crazy_river.set_dynamics(no_overflow, z1, - alpha1 * z1 + beta1 * a1);
+	crazy_river.set_dynamics(no_overflow, z2, - alpha2 * z2 + beta2 * a2);
 	crazy_river.set_dynamics(overflow, z1, 0);
-	crazy_river.set_dynamics(overflow, z2, - alpha2 * z2 + beta2 * a2  + alpha1 * z1);
+	crazy_river.set_dynamics(overflow, z2, - alpha2 * z2 + beta2 * a2  + (beta1 * a1 - alpha1 * z1));
 
 	//guards
 	RealExpression guard1 = z1 - H;				   //!< z>=H
