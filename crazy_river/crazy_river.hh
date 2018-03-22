@@ -5,233 +5,258 @@
 #include <ariadne.h>
 namespace Ariadne
 {
-HybridIOAutomaton getSystem()
+//!< alpha1_i_val : uscita z_i; beta_i_val : ingresso z_i
+HybridIOAutomaton getSystem(double alpha1_val = 0.02, double alpha2_val = 0.02, double alpha3_val = 0.02, double beta1_val = 0.03, double beta2_val = 0.03, double beta3_val = 0.03, double T_val = 4.0, double hmin_val = 1.0, double hmax_val = 2.0, double delta_val = 0.1, double H1_val = 1.90, double H2_val = 1.90, double H3_val = 1.90)
 {
 	//System variables
-	RealVariable a1("a1");
-	RealVariable a2("a2");
+	RealVariable a("a");
 	RealVariable z1("z1");
 	RealVariable z2("z2");
 	RealVariable z3("z3");
+	RealVariable z4("z4");
 
 	//System parameters
-	RealParameter alpha1("alpha1", 0.02);
-	RealParameter alpha2("alpha2", 0.02);
-	RealParameter beta1("beta1", 0.1);
-	RealParameter beta2("beta2", 0.1);
-	RealParameter T("T", 2.0);
-	RealParameter hmin("hmin", 1.0);
-	RealParameter hmax("hmax", 2.0);
-	RealParameter delta("delta", 0.1);
-	RealParameter H("H", 1.90);
+	RealParameter alpha1("alpha1", alpha1_val);
+	RealParameter alpha2("alpha2", alpha2_val);
+	RealParameter alpha3("alpha3", alpha3_val);
+	RealParameter beta1("beta1", beta1_val);
+	RealParameter beta2("beta2", beta2_val);
+	RealParameter beta3("beta3", beta3_val);
+	RealParameter T("T", T_val);
+	RealParameter hmin("hmin", hmin_val);
+	RealParameter hmax("hmax", hmax_val);
+	RealParameter delta("delta", delta_val);
+	RealParameter H1("H1", H1_val);
+	RealParameter H2("H2", H2_val);
+	RealParameter H3("H3", H3_val);
 
 	// 1.Automaton registration
 	HybridIOAutomaton crazy_river("crazy_river");
 
 	// 2.Registration of input/output variables
-	crazy_river.add_input_var(a1);
-	crazy_river.add_input_var(a2);
+	crazy_river.add_input_var(a);
 	crazy_river.add_output_var(z1);
 	crazy_river.add_output_var(z2);
 	crazy_river.add_output_var(z3);
+	crazy_river.add_output_var(z4);
 
 	// 3.Registration of Events
-	DiscreteEvent e_overflow("e_overflow");
-	crazy_river.add_output_event(e_overflow);
-	DiscreteEvent e_no_overflow("e_no_overflow");
-	crazy_river.add_output_event(e_no_overflow);
+	DiscreteEvent e_a("e_a");
+	crazy_river.add_output_event(e_a);
+	DiscreteEvent e_b("e_b");
+	crazy_river.add_output_event(e_b);
+	DiscreteEvent e_c("e_c");
+	crazy_river.add_output_event(e_c);
+	DiscreteEvent e_d("e_d");
+	crazy_river.add_output_event(e_d);
+	DiscreteEvent e_e("e_e");
+	crazy_river.add_output_event(e_e);
+	DiscreteEvent e_f("e_f");
+	crazy_river.add_output_event(e_f);
 
 	// 4.Registration of Locations
-	DiscreteLocation no_overflow("no_overflow");
-	DiscreteLocation overflow("overflow");
+	DiscreteLocation S0("S0");
+	DiscreteLocation S1("S1");
+	DiscreteLocation S2("S2");
+	DiscreteLocation S3("S3");
+	DiscreteLocation S4("S4");
+	DiscreteLocation S5("S5");
+	DiscreteLocation S6("S6");
+	DiscreteLocation S7("S7");
 
-	crazy_river.new_mode(no_overflow);
-	crazy_river.new_mode(overflow);
+	crazy_river.new_mode(S0); //!< overflow nowhere
+	crazy_river.new_mode(S1); //!< overflow on tank 1
+	crazy_river.new_mode(S2); //!< overflow on tank 2
+	crazy_river.new_mode(S3); //!< overflow on tank 3
+	crazy_river.new_mode(S4); //!< overflow on tank 1,2
+	crazy_river.new_mode(S5); //!< overflow on tank 1,3
+	crazy_river.new_mode(S6); //!< overflow on tank 2,3
+	crazy_river.new_mode(S7); //!< overflow everywhere
 
 	// 5.Registration of dynamics
-	crazy_river.set_dynamics(no_overflow, z1, - alpha1 * z1 + beta1 * a1);
-	crazy_river.set_dynamics(no_overflow, z2, - alpha2 * z2 + beta2 * a2);
-	crazy_river.set_dynamics(no_overflow, z3, alpha1 * z1 + alpha2 * z2 - beta1 * a1 - beta2 * a2);
-	crazy_river.set_dynamics(overflow, z1, 0);
-	crazy_river.set_dynamics(overflow, z2, - alpha2 * z2 + beta2 * a2  + (beta1 * a1 - alpha1 * z1));
-	crazy_river.set_dynamics(overflow, z3, alpha1 * z1 + alpha2 * z2 - beta1 * a1 - beta2 * a2);
+	//no one overflow
+	crazy_river.set_dynamics(S0, z1, -alpha1 * z1 + beta1 * a);
+	crazy_river.set_dynamics(S0, z2, -alpha2 * z2 + beta2 * a);
+	crazy_river.set_dynamics(S0, z3, -alpha3 * z3 + beta3 * a);
+	crazy_river.set_dynamics(S0, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 1
+	crazy_river.set_dynamics(S1, z1, 0);
+	crazy_river.set_dynamics(S1, z2, - alpha2 * z2 + beta2 * a + beta1 * a - alpha1 * z1);
+	crazy_river.set_dynamics(S1, z3, - alpha3 * z3 + beta3 * a);
+	crazy_river.set_dynamics(S1, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 2
+	crazy_river.set_dynamics(S2, z1, -alpha1 * z1 + beta1 * a);
+	crazy_river.set_dynamics(S2, z2, 0);
+	crazy_river.set_dynamics(S2, z3, -alpha3 * z3 + beta3 * a - alpha2 * z2 + beta2 * a);
+	crazy_river.set_dynamics(S2, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 3
+	crazy_river.set_dynamics(S3, z1, -alpha1 * z1 + beta1 * a);
+	crazy_river.set_dynamics(S3, z2, -alpha2 * z2 + beta2 * a);
+	crazy_river.set_dynamics(S3, z3, 0);
+	crazy_river.set_dynamics(S3, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 1,2
+	crazy_river.set_dynamics(S4, z1, 0);
+	crazy_river.set_dynamics(S4, z2, 0);
+	crazy_river.set_dynamics(S4, z3, -alpha3 * z3 + beta3 * a - alpha2 * z2 + beta2 * a - alpha1 * z1 + beta1 * a);
+	crazy_river.set_dynamics(S4, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 1,3
+	crazy_river.set_dynamics(S5, z1, 0);
+	crazy_river.set_dynamics(S5, z2, -alpha2 * z2 + beta2 * a + beta1 * a - alpha1 * z1);
+	crazy_river.set_dynamics(S5, z3, 0);
+	crazy_river.set_dynamics(S5, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 2,3
+	crazy_river.set_dynamics(S6, z1, -alpha1 * z1 + beta1 * a);
+	crazy_river.set_dynamics(S6, z2, 0);
+	crazy_river.set_dynamics(S6, z3, 0);
+	crazy_river.set_dynamics(S6, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+	//overflow 1,2,3
+	crazy_river.set_dynamics(S7, z1, 0);
+	crazy_river.set_dynamics(S7, z2, 0);
+	crazy_river.set_dynamics(S7, z3, 0);
+	crazy_river.set_dynamics(S7, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
 
 	//guards
-	RealExpression guard1 = z1 - H;				   //!< z>=H
-	RealExpression guard2 = - beta1 * a1 - alpha1 * z1; //!< z<=beta*a
+	RealExpression guard_a = z1 - H1;				   //!< z>=H
+	RealExpression guard_d = - beta1 * a - alpha1 * z1; //!< z<=beta*a
+	RealExpression guard_b = z2 - H2;				   //!< z>=H
+	RealExpression guard_e = - beta2 * a - alpha2 * z2; //!< z<=beta*a
+	RealExpression guard_c = z3 - H3;				   //!< z>=H
+	RealExpression guard_f = - beta3 * a - alpha3 * z3; //!< z<=beta*a
 
-	std::map<RealVariable, RealExpression> reset1;
-	reset1[z1] = z1;
-	reset1[z2] = z2;
-	reset1[z3] = z3;
+	std::map<RealVariable, RealExpression> reset;
+	reset[z1] = z1;
+	reset[z2] = z2;
+	reset[z3] = z3;
+	reset[z4] = z4;
 
-	crazy_river.new_forced_transition(e_overflow, no_overflow, overflow, reset1, guard1);
-	crazy_river.new_forced_transition(e_no_overflow, overflow, no_overflow, reset1, guard2);
+	/**
+	 * 			TRANSITION TABLE
+	 * --------------------------------------
+	 * 	 |	S0	S1	S2	S3	S4	S5	S6	S7
+	 * --------------------------------------
+	 * a |	S1	-	S4	S5	-	-	S7	-
+	 * b |	S2	S4	-	S6	-	S7	-	-
+	 * c |	S3	S5	S6	-	S7	-	-	-
+	 * d |	-	S0	-	-	S2	S3	-	S6
+	 * e |	-	-	S0	-	S1	-	S3	S5
+	 * f |	-	-	-	S0	-	S1	S2	S4
+	 */
+	crazy_river.new_forced_transition(e_a, S0, S1, reset, guard_a);
+	crazy_river.new_forced_transition(e_b, S0, S2, reset, guard_b);
+	crazy_river.new_forced_transition(e_c, S0, S3, reset, guard_c);
+	
+	crazy_river.new_forced_transition(e_b, S1, S4, reset, guard_b);
+	crazy_river.new_forced_transition(e_c, S1, S5, reset, guard_c);
+	crazy_river.new_forced_transition(e_d, S1, S0, reset, guard_d);
+	
+	crazy_river.new_forced_transition(e_a, S2, S4, reset, guard_a);
+	crazy_river.new_forced_transition(e_c, S2, S6, reset, guard_c);
+	crazy_river.new_forced_transition(e_e, S2, S0, reset, guard_e);
+
+	crazy_river.new_forced_transition(e_a, S3, S5, reset, guard_a);
+	crazy_river.new_forced_transition(e_b, S3, S6, reset, guard_b);
+	crazy_river.new_forced_transition(e_f, S3, S0, reset, guard_f);
+
+	crazy_river.new_forced_transition(e_c, S4, S7, reset, guard_c);
+	crazy_river.new_forced_transition(e_d, S4, S2, reset, guard_d);
+	crazy_river.new_forced_transition(e_e, S4, S1, reset, guard_e);
+
+	crazy_river.new_forced_transition(e_b, S5, S7, reset, guard_b);
+	crazy_river.new_forced_transition(e_d, S5, S3, reset, guard_d);
+	crazy_river.new_forced_transition(e_f, S5, S1, reset, guard_f);
+
+	crazy_river.new_forced_transition(e_a, S6, S7, reset, guard_a);
+	crazy_river.new_forced_transition(e_e, S6, S3, reset, guard_e);
+	crazy_river.new_forced_transition(e_f, S6, S2, reset, guard_f);
+
+	crazy_river.new_forced_transition(e_d, S7, S6, reset, guard_d);
+	crazy_river.new_forced_transition(e_e, S7, S5, reset, guard_e);
+	crazy_river.new_forced_transition(e_f, S7, S4, reset, guard_f);
 
 	//-------- Input valve --------
 	// 1.Automaton registration
-	HybridIOAutomaton i_valve("i_valve");
+	HybridIOAutomaton valve("valve");
 
 	// 2.Registration of input/output
-	i_valve.add_output_var(a1);
+	valve.add_output_var(a);
 
 	// 3.Registration of input/output internal events
-	DiscreteEvent e_i_open("i_open");
-	DiscreteEvent e_i_close("i_close");
-	DiscreteEvent e_i_idle("i_idle");
+	DiscreteEvent e_open("open");
+	DiscreteEvent e_close("close");
+	DiscreteEvent e_idle("idle");
 
-	i_valve.add_input_event(e_i_open);
-	i_valve.add_input_event(e_i_close);
-	i_valve.add_internal_event(e_i_idle);
+	valve.add_input_event(e_open);
+	valve.add_input_event(e_close);
+	valve.add_internal_event(e_idle);
 
 	// 4.Registration of locations
-	DiscreteLocation i_opening("i_opening");
-	DiscreteLocation i_idle("i_idle");
-	DiscreteLocation i_closing("i_closing");
+	DiscreteLocation opening("opening");
+	DiscreteLocation idle("idle");
+	DiscreteLocation closing("closing");
 
-	i_valve.new_mode(i_opening);
-	i_valve.new_mode(i_idle);
-	i_valve.new_mode(i_closing);
+	valve.new_mode(opening);
+	valve.new_mode(idle);
+	valve.new_mode(closing);
 
 	// 5.Registration of dynamics
-	i_valve.set_dynamics(i_idle, a1, 0.0);
-	i_valve.set_dynamics(i_closing, a1, -1.0 / T);
-	i_valve.set_dynamics(i_opening, a1, 1.0 / T);
+	valve.set_dynamics(idle, a, 0.0);
+	valve.set_dynamics(closing, a, -1.0 / T);
+	valve.set_dynamics(opening, a, 1.0 / T);
 
 	// 6.Registration of transitions
 	// Guards
-	RealExpression a_geq_one = a1 - 1.0; // a >= 1
-	RealExpression a_leq_zero = -a1;	 // a >= 0
+	RealExpression a_geq_one = a - 1.0; // a >= 1
+	RealExpression a_leq_zero = -a;		// a >= 0
 
 	// Resets
 	std::map<RealVariable, RealExpression> rst_a_one;
-	rst_a_one[a1] = 1.0; // a = 1
+	rst_a_one[a] = 1.0; // a = 1
 	std::map<RealVariable, RealExpression> rst_a_zero;
-	rst_a_zero[a1] = 0.0; // a = 0
+	rst_a_zero[a] = 0.0; // a = 0
 
-	i_valve.new_forced_transition(e_i_idle, i_opening, i_idle, rst_a_one, a_geq_one);
-	i_valve.new_forced_transition(e_i_idle, i_closing, i_idle, rst_a_zero, a_leq_zero);
+	valve.new_forced_transition(e_idle, opening, idle, rst_a_one, a_geq_one);
+	valve.new_forced_transition(e_idle, closing, idle, rst_a_zero, a_leq_zero);
 
-	i_valve.new_unforced_transition(e_i_open, i_idle, i_opening);
-	i_valve.new_unforced_transition(e_i_close, i_idle, i_closing);
-
-	//-------- input valve controller --------
-	// 1.Automaton
-	HybridIOAutomaton controller_i_valve("controller_i_valve");
-
-	// 2.Registration of the input/output variables
-	controller_i_valve.add_input_var(z1);
-
-	// 3.Registration of the events
-	controller_i_valve.add_output_event(e_i_open);
-	controller_i_valve.add_output_event(e_i_close);
-
-	// 4.Registration of the locations
-	DiscreteLocation i_rising("i_rising");
-	DiscreteLocation i_falling("i_falling");
-
-	controller_i_valve.new_mode(i_rising);
-	controller_i_valve.new_mode(i_falling);
-
-	// 5.Transitions
-	// Invariants
-	RealExpression z_leq_hmax = z1 - hmax - delta; // x <= hmax + delta
-	RealExpression z_geq_hmin = hmin - delta - z1; // x >= hmin - delta
-
-	controller_i_valve.new_invariant(i_rising, z_leq_hmax);
-	controller_i_valve.new_invariant(i_falling, z_geq_hmin);
-
-	// Guards
-	RealExpression z_geq_hmax = z1 - hmax + delta; // z1 >= hmax - delta
-	RealExpression z_leq_hmin = hmin + delta - z1; // z1 <= hmin + delta
-
-	controller_i_valve.new_unforced_transition(e_i_close, i_rising, i_falling, z_geq_hmax);
-	controller_i_valve.new_unforced_transition(e_i_open, i_falling, i_rising, z_leq_hmin);
-
-	//-------- Output valve --------
-	// 1.Automaton registration
-	HybridIOAutomaton o_valve("o_valve");
-
-	// 2.Registration of input/output
-	o_valve.add_output_var(a2);
-
-	// 3.Registration of input/output internal events
-	DiscreteEvent e_o_open("o_open");
-	DiscreteEvent e_o_close("o_close");
-	DiscreteEvent e_o_idle("o_idle");
-
-	o_valve.add_input_event(e_o_open);
-	o_valve.add_input_event(e_o_close);
-	o_valve.add_internal_event(e_o_idle);
-
-	// 4.Registration of locations
-	DiscreteLocation o_opening("o_opening");
-	DiscreteLocation o_idle("o_idle");
-	DiscreteLocation o_closing("o_closing");
-
-	o_valve.new_mode(o_opening);
-	o_valve.new_mode(o_idle);
-	o_valve.new_mode(o_closing);
-
-	// 5.Registration of dynamics
-	o_valve.set_dynamics(o_idle, a2, 0.0);
-	o_valve.set_dynamics(o_closing, a2, -1.0 / T);
-	o_valve.set_dynamics(o_opening, a2, 1.0 / T);
-
-	// 6.Registration of transitions
-	// Guards
-	RealExpression a2_geq_one = a2 - 1.0; // a >= 1
-	RealExpression a2_leq_zero = -a2;	 // a >= 0
-
-	// Resets
-	std::map<RealVariable, RealExpression> rst_a2_one;
-	rst_a2_one[a2] = 1.0; // a = 1
-	std::map<RealVariable, RealExpression> rst_a2_zero;
-	rst_a2_zero[a2] = 0.0; // a = 0
-
-	o_valve.new_forced_transition(e_o_idle, o_opening, o_idle, rst_a2_one, a2_geq_one);
-	o_valve.new_forced_transition(e_o_idle, o_closing, o_idle, rst_a2_zero, a2_leq_zero);
-
-	o_valve.new_unforced_transition(e_o_open, o_idle, o_opening);
-	o_valve.new_unforced_transition(e_o_close, o_idle, o_closing);
+	valve.new_unforced_transition(e_open, idle, opening);
+	valve.new_unforced_transition(e_close, idle, closing);
 
 	//-------- input valve controller --------
 	// 1.Automaton
-	HybridIOAutomaton controller_o_valve("controller_o_valve");
+	HybridIOAutomaton controller_valve("controller_valve");
 
 	// 2.Registration of the input/output variables
-	controller_o_valve.add_input_var(z2);
+	controller_valve.add_input_var(z1);
+	controller_valve.add_input_var(z2);
+	controller_valve.add_input_var(z3);
 
 	// 3.Registration of the events
-	controller_o_valve.add_output_event(e_o_open);
-	controller_o_valve.add_output_event(e_o_close);
+	controller_valve.add_output_event(e_open);
+	controller_valve.add_output_event(e_close);
 
 	// 4.Registration of the locations
-	DiscreteLocation o_rising("o_rising");
-	DiscreteLocation o_falling("o_falling");
+	DiscreteLocation rising("rising");
+	DiscreteLocation falling("falling");
 
-	controller_o_valve.new_mode(o_rising);
-	controller_o_valve.new_mode(o_falling);
+	controller_valve.new_mode(rising);
+	controller_valve.new_mode(falling);
 
 	// 5.Transitions
 	// Invariants
-	RealExpression z2_leq_hmax = z2 - hmax - delta; // x <= hmax + delta
-	RealExpression z2_geq_hmin = hmin - delta - z2; // x >= hmin - delta
+	RealExpression z_geq_hmin = (hmin - delta - z1) * (hmin - delta - z2) * (hmin - delta - z3); // x >= hmin - delta
+	RealExpression z_leq_hmax = (z1 - hmax - delta) * (z2 - hmax - delta) * (z3 - hmax - delta); // x <= hmax + delta
 
-	controller_o_valve.new_invariant(o_rising, z2_leq_hmax);
-	controller_o_valve.new_invariant(o_falling, z2_geq_hmin);
+	controller_valve.new_invariant(rising, z_leq_hmax);
+	controller_valve.new_invariant(falling, z_geq_hmin);
 
 	// Guards
-	RealExpression z2_geq_hmax = z2 - hmax + delta; // z1 >= hmax - delta
-	RealExpression z2_leq_hmin = hmin + delta - z2; // z1 <= hmin + delta
+	RealExpression z_geq_hmax = (z1 - hmax + delta) * (z2 - hmax + delta) * (z3 - hmax + delta); // z1 >= hmax - delta
+	RealExpression z_leq_hmin = (hmin + delta - z1) * (hmin + delta - z2) * (hmin + delta - z3); // z1 <= hmin + delta
 
-	controller_o_valve.new_unforced_transition(e_o_close, o_rising, o_falling, z2_geq_hmax);
-	controller_o_valve.new_unforced_transition(e_o_open, o_falling, o_rising, z2_leq_hmin);
+	controller_valve.new_unforced_transition(e_close, rising, falling, z_geq_hmax);
+	controller_valve.new_unforced_transition(e_open, falling, rising, z_leq_hmin);
 
-	HybridIOAutomaton tank_valve1 = compose("tank,i_valve", crazy_river, i_valve, no_overflow, i_idle);
-	HybridIOAutomaton tank_valve2 = compose("tank,o_valve", tank_valve1, o_valve, DiscreteLocation("no_overflow,i_idle"), o_idle);
-	HybridIOAutomaton tank2 = compose("tank2", tank_valve2, controller_i_valve, DiscreteLocation("no_overflow,i_idle,o_idle"), i_rising);
-	HybridIOAutomaton system = compose("crazy_river",tank2,controller_o_valve,DiscreteLocation("no_overflow,i_idle,o_idle,i_rising"),o_rising);
+	HybridIOAutomaton tank_valve = compose("tanks,valve", crazy_river, valve, S0, idle);
+	HybridIOAutomaton system = compose("crazy_river", tank_valve, controller_valve, DiscreteLocation("S0,idle"), rising);
 
 	return system;
 }

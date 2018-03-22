@@ -32,38 +32,45 @@
 using namespace Ariadne;
 
 /// Forward declarations, used only to properly organize the source file
-void finite_time_upper_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-void finite_time_lower_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, Semantics semantics, int verbosity);
-void infinite_time_outer_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-void safety_verification(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-void parametric_safety_verification(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results);
-HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface& system);
+void finite_time_upper_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+void finite_time_lower_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, Semantics semantics, int verbosity);
+void infinite_time_outer_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+void safety_verification(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+void parametric_safety_verification(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results);
+HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface &system);
 
 // The main method for the analysis of the system
 // Since the analyses are independent, you may comment out any one if you want
 // to focus on specific ones.
-void analyse(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results)
+void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
 {
-    cout << "1/6: Finite time upper evolution... " << endl << flush;
-    finite_time_upper_evolution(system,initial_set,verbosity,plot_results);
-    cout << "2/6: Finite time lower evolution... " << endl << flush;
-    finite_time_lower_evolution(system,initial_set,verbosity,plot_results);
-    cout << "3/6: Infinite time outer evolution... " << endl << flush;
+    cout << "1/6: Finite time upper evolution... " << endl
+         << flush;
+    finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
+    cout << "2/6: Finite time lower evolution... " << endl
+         << flush;
+    finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    cout << "3/6: Infinite time outer evolution... " << endl
+         << flush;
     //infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
-    cout << "4/6: Infinite time lower evolution... " << endl << flush;
-    infinite_time_epsilon_lower_evolution(system,initial_set,verbosity,plot_results);
-    cout << "5/6: Safety verification... " << endl << flush;
-    safety_verification(system,initial_set,verbosity,plot_results);
-    cout << "6/6: Parametric safety verification... " << endl << flush;
-    parametric_safety_verification(system,initial_set,verbosity,plot_results);
+    cout << "4/6: Infinite time lower evolution... " << endl
+         << flush;
+    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+    cout << "5/6: Safety verification... " << endl
+         << flush;
+    safety_verification(system, initial_set, verbosity, plot_results);
+    cout << "6/6: Parametric safety verification... " << endl
+         << flush;
+    parametric_safety_verification(system, initial_set, verbosity, plot_results);
 }
 
 // Performs finite time evolution.
-HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, Semantics semantics, int verbosity) {
+HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, Semantics semantics, int verbosity)
+{
 
-	// Creates an evolver
+    // Creates an evolver
     HybridEvolver evolver(system);
     evolver.verbosity = verbosity;
     evolver.settings().set_maximum_step_size(0.5); // The time step size to be used
@@ -72,19 +79,22 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
     // This operation is only necessary since we provided an initial set expressed as a constraint set
     HybridEvolver::EnclosureListType initial_enclosures;
     HybridBoxes initial_set_domain = initial_set.domain();
-    for (HybridBoxes::const_iterator it = initial_set_domain.locations_begin(); it != initial_set_domain.locations_end(); ++it) {
-    	if (!it->second.empty()) {
-    		initial_enclosures.adjoin(HybridEvolver::EnclosureType(it->first,Box(it->second.centre())));
-    	}
+    for (HybridBoxes::const_iterator it = initial_set_domain.locations_begin(); it != initial_set_domain.locations_end(); ++it)
+    {
+        if (!it->second.empty())
+        {
+            initial_enclosures.adjoin(HybridEvolver::EnclosureType(it->first, Box(it->second.centre())));
+        }
     }
-  
+
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(20.0,8);
- 
+    HybridTime evol_limits(20.0, 15);
+
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;
-    for (HybridEvolver::EnclosureListType::const_iterator it = initial_enclosures.begin(); it != initial_enclosures.end(); ++it) {
+    for (HybridEvolver::EnclosureListType::const_iterator it = initial_enclosures.begin(); it != initial_enclosures.end(); ++it)
+    {
         HybridEvolver::OrbitType orbit = evolver.orbit(*it, evol_limits, semantics);
         result.adjoin(orbit.reach());
     }
@@ -93,84 +103,93 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 }
 
 // Performs finite time upper evolution
-void finite_time_upper_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void finite_time_upper_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType reach = _finite_time_evolution(system, initial_set, UPPER_SEMANTICS, verbosity);
 
     // Plots the reached set specifically
-    if (plot_results) {
+    if (plot_results)
+    {
         PlotHelper plotter(system);
-        plotter.plot(reach,"upper_reach");
+        plotter.plot(reach, "upper_reach");
     }
 }
 
 // Performs finite time lower evolution.
-void finite_time_lower_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void finite_time_lower_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType reach = _finite_time_evolution(system, initial_set, LOWER_SEMANTICS, verbosity);
 
     // Plots the reached set specifically
-    if (plot_results) {
+    if (plot_results)
+    {
         PlotHelper plotter(system);
-        plotter.plot(reach,"lower_reach");
+        plotter.plot(reach, "lower_reach");
     }
 }
 
 // Performs infinite time outer evolution
-void infinite_time_outer_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void infinite_time_outer_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(),Box(5, 0.0,1.0,0.0,1.0, 0.5,3.0, 0.5,3.0, 0.5,3.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 1.0,3.0, 1.0,3.0, 1.0,3.0, 1.0,3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
     int accuracy = 1;
 
     // Creates an analyser with the required arguments
-    HybridReachabilityAnalyser analyser(system,domain,accuracy);
+    HybridReachabilityAnalyser analyser(system, domain, accuracy);
     analyser.verbosity = verbosity;
 
     // Performs the outer reach
     HybridDenotableSet reach = analyser.outer_chain_reach(initial_set);
 
     // Plots the reached region
-    if (plot_results) {
+    if (plot_results)
+    {
         PlotHelper plotter(system);
-        plotter.plot(reach,"outer",accuracy);
+        plotter.plot(reach, "outer", accuracy);
     }
 }
 
 // Performs infinite time epsilon-lower evolution
-void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
-	// Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(),Box(5, 0.0,1.0,0.0,1.0, 0.5,3.0, 0.5,3.0, 0.5,3.0));
+    // Creates the domain, necessary to guarantee termination for infinite-time evolution
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
     int accuracy = 3;
 
     // Creates an analyser with the required arguments
-    HybridReachabilityAnalyser analyser(system,domain,accuracy);
+    HybridReachabilityAnalyser analyser(system, domain, accuracy);
     analyser.verbosity = verbosity;
 
     // Performs the lower reach, also outputting the obtained epsilon
     HybridDenotableSet reach;
     HybridFloatVector epsilon;
-    make_lpair<HybridDenotableSet,HybridFloatVector>(reach,epsilon) = analyser.epsilon_lower_chain_reach(initial_set);
+    make_lpair<HybridDenotableSet, HybridFloatVector>(reach, epsilon) = analyser.epsilon_lower_chain_reach(initial_set);
 
     // Plots the reached region
-    if (plot_results) {
+    if (plot_results)
+    {
         PlotHelper plotter(system);
-        plotter.plot(reach,"lower",accuracy);
+        plotter.plot(reach, "lower", accuracy);
     }
 }
 
 // Performs verification in respect to a safety specification expresses as a set
-void safety_verification(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void safety_verification(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
-	// Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(),Box(5, 0.0,1.0, 1.0,2.0, 1.0,2.0, 0.5,3.0));
+    // Creates the domain, necessary to guarantee termination for infinite-time evolution
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0));
     // Creates the safety constraint
     HybridConstraintSet safety_constraint = getSafetyConstraint(system);
 
@@ -192,17 +211,18 @@ void safety_verification(HybridAutomatonInterface& system, HybridBoundedConstrai
 // but it does such verification within a given parameters space, where hmin and hmax
 // are expresses as intervals. Such intervals are then split in order to identify
 // a collection of boxes where to perform the safety verification individually.
-void parametric_safety_verification(HybridAutomatonInterface& system, HybridBoundedConstraintSet& initial_set, int verbosity, bool plot_results) {
+void parametric_safety_verification(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
+{
 
-	// Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(),Box(5, 0.0,1.0, 0.0,1.0, 1.0,2.0, 1.0,2.0, 0.5,3.0));
+    // Creates the domain, necessary to guarantee termination for infinite-time evolution
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0));
     // Creates the safety constraint
     HybridConstraintSet safety_constraint = getSafetyConstraint(system);
 
     // The parameters which will be split into disjoint sets
     RealParameterSet parameters;
-	parameters.insert(RealParameter("hmin",Interval(0.0,1.0)));
-	parameters.insert(RealParameter("hmax",Interval(2.0,2.5)));
+    parameters.insert(RealParameter("hmin", Interval(0.0, 1.0)));
+    parameters.insert(RealParameter("hmax", Interval(2.0, 2.5)));
 
     // Initialization of the verifier
     Verifier verifier;
@@ -221,47 +241,54 @@ void parametric_safety_verification(HybridAutomatonInterface& system, HybridBoun
     list<ParametricOutcome> results = verifier.parametric_safety(verInput, parameters);
 
     // Plots the list in a 2d mesh
-    if (plot_results) {
+    if (plot_results)
+    {
         PlotHelper plotter(system);
-        plotter.plot(results,verifier.settings().maximum_parameter_depth);
+        plotter.plot(results, verifier.settings().maximum_parameter_depth);
     }
 }
 
 // Constructs the safety constraint for (parametric) safety verification
-HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface& system) {
+HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface &system)
+{
 
-	// The desired constraint is 5.25 <= x <= 8.25 for all locations
-	// The construction below may seem convoluted, however it allows for
-	// large generality when defining the constraint set.
+    // The desired constraint is 5.25 <= x <= 8.25 for all locations
+    // The construction below may seem convoluted, however it allows for
+    // large generality when defining the constraint set.
 
-	// Constructs the variable list, required by the vector function
-    RealVariable a1("a1");
-    RealVariable a2("a2");
+    // Constructs the variable list, required by the vector function
+    RealVariable a("a");
     RealVariable z1("z1");
     RealVariable z2("z2");
     RealVariable z3("z3");
+    RealVariable z4("z4");
+
     List<RealVariable> varlist;
     // The variables MUST be appended in the same order as the one used internally by the system,
     // i.e., in alphabetical order
-    varlist.append(a1);
-    varlist.append(a2);
+    varlist.append(a);
     varlist.append(z1);
     varlist.append(z2);
     varlist.append(z3);
+    varlist.append(z4);
+
     // Constructs the expression
     RealExpression expr1 = z1;
     RealExpression expr2 = z2;
     RealExpression expr3 = z3;
+    RealExpression expr4 = z4;
     List<RealExpression> consexpr;
     consexpr.append(expr1);
     consexpr.append(expr2);
     consexpr.append(expr3);
-    VectorFunction cons_f(consexpr,varlist);
+    consexpr.append(expr4);
+
+    VectorFunction cons_f(consexpr, varlist);
     // Constructs the codomain for the expression
-    Box codomain(3,0.5,3.5, 0.5,3.5, 0.5,3.5);
+    Box codomain(3, 0.5,3.5, 0.5,3.5, 0.5,3.5, 0.5,3.5);
 
     // Constructs a costraint set and then applies it to each location of the system
-    return HybridConstraintSet(system.state_space(),ConstraintSet(cons_f,codomain));
+    return HybridConstraintSet(system.state_space(), ConstraintSet(cons_f, codomain));
 }
 
 #endif /* ANALYSIS_H_ */
