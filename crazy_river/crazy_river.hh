@@ -3,7 +3,6 @@
  */
 #pragma once
 #include <ariadne.h>
-
 namespace Ariadne
 {
 HybridIOAutomaton getSystem()
@@ -13,13 +12,14 @@ HybridIOAutomaton getSystem()
 	RealVariable a2("a2");
 	RealVariable z1("z1");
 	RealVariable z2("z2");
+	RealVariable z3("z3");
 
 	//System parameters
 	RealParameter alpha1("alpha1", 0.02);
 	RealParameter alpha2("alpha2", 0.02);
 	RealParameter beta1("beta1", 0.1);
 	RealParameter beta2("beta2", 0.1);
-	RealParameter T("T", 4.0);
+	RealParameter T("T", 2.0);
 	RealParameter hmin("hmin", 1.0);
 	RealParameter hmax("hmax", 2.0);
 	RealParameter delta("delta", 0.1);
@@ -33,6 +33,7 @@ HybridIOAutomaton getSystem()
 	crazy_river.add_input_var(a2);
 	crazy_river.add_output_var(z1);
 	crazy_river.add_output_var(z2);
+	crazy_river.add_output_var(z3);
 
 	// 3.Registration of Events
 	DiscreteEvent e_overflow("e_overflow");
@@ -50,8 +51,10 @@ HybridIOAutomaton getSystem()
 	// 5.Registration of dynamics
 	crazy_river.set_dynamics(no_overflow, z1, - alpha1 * z1 + beta1 * a1);
 	crazy_river.set_dynamics(no_overflow, z2, - alpha2 * z2 + beta2 * a2);
+	crazy_river.set_dynamics(no_overflow, z3, alpha1 * z1 + alpha2 * z2 - beta1 * a1 - beta2 * a2);
 	crazy_river.set_dynamics(overflow, z1, 0);
 	crazy_river.set_dynamics(overflow, z2, - alpha2 * z2 + beta2 * a2  + (beta1 * a1 - alpha1 * z1));
+	crazy_river.set_dynamics(overflow, z3, alpha1 * z1 + alpha2 * z2 - beta1 * a1 - beta2 * a2);
 
 	//guards
 	RealExpression guard1 = z1 - H;				   //!< z>=H
@@ -60,6 +63,7 @@ HybridIOAutomaton getSystem()
 	std::map<RealVariable, RealExpression> reset1;
 	reset1[z1] = z1;
 	reset1[z2] = z2;
+	reset1[z3] = z3;
 
 	crazy_river.new_forced_transition(e_overflow, no_overflow, overflow, reset1, guard1);
 	crazy_river.new_forced_transition(e_no_overflow, overflow, no_overflow, reset1, guard2);
