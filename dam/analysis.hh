@@ -58,6 +58,8 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
     infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+        return;
+
     cout << "5/6: Safety verification... " << endl
          << flush;
     safety_verification(system, initial_set, verbosity, plot_results);
@@ -89,7 +91,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(30.0, 30);
+    HybridTime evol_limits(100.0, 3000);
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;
@@ -162,7 +164,8 @@ void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, Hyb
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0));
+
+    HybridBoxes domain(system.state_space(), Box(5, 0.0,0.0, 0.0,0.0, 10.0,100.0, 1.0,10.0, 25.0,30.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
     int accuracy = 3;
