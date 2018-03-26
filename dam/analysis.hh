@@ -48,19 +48,19 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
 {
     cout << "1/6: Finite time upper evolution... " << endl
          << flush;
-    //finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
+    finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
     cout << "2/6: Finite time lower evolution... " << endl
          << flush;
-  //  finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "3/6: Infinite time outer evolution... " << endl
          << flush;
     //infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
-//    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "5/6: Safety verification... " << endl
          << flush;
-    //safety_verification(system, initial_set, verbosity, plot_results);
+    safety_verification(system, initial_set, verbosity, plot_results);
     cout << "6/6: Parametric safety verification... " << endl
          << flush;
     parametric_safety_verification(system, initial_set, verbosity, plot_results);
@@ -222,8 +222,8 @@ void parametric_safety_verification(HybridAutomatonInterface &system, HybridBoun
 
     // The parameters which will be split into disjoint sets
     RealParameterSet parameters;
-    parameters.insert(RealParameter("pmin", Interval(0.0, 1.0)));
-    //parameters.insert(RealParameter("pmax", Interval(8.0, 20.0)));
+    // parameters.insert(RealParameter("pmin", Interval(0.0, 1.0)));
+    parameters.insert(RealParameter("pmax", Interval(8.0, 20.0)));
     //parameters.insert(RealParameter("tmin", Interval(23.0,25.0)));
     //parameters.insert(RealParameter("tmax", Interval(30.0,33.0)));
 

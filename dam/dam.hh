@@ -18,7 +18,7 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	RealParameter alpha("alpha", alpha_val);
 	RealParameter beta("beta", beta_val);
 	RealParameter psi("psi", g * eta * h * rho);
-	RealParameter epsilon("epsilon", 1.0);//Interval(epsilon_lower, epsilon_upper));
+	RealParameter epsilon("epsilon", 1.0); //Interval(epsilon_lower, epsilon_upper));
 	RealParameter gamma("gamma", gamma_val);
 	RealParameter T("T", T_val);
 	RealParameter pmin("pmin", pmin_val);
@@ -45,7 +45,7 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 
 	//Registration of dynamics
 	dam.set_dynamics(flow, l, -alpha * a * l + epsilon);
-	dam.set_dynamics(flow, p, alpha * psi * a  - beta * b * p);
+	dam.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
 	dam.set_dynamics(flow, t, beta * b * p - gamma * t);
 
 	//------------ Water valve ------------
@@ -97,36 +97,27 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	//------------ Temperature valve ------------
 	HybridIOAutomaton t_valve("t_valve");
 
-	//Registration of input/output
 	t_valve.add_output_var(b);
 
 	//Registration of input/output internal events
-	DiscreteEvent e_b_open("b_open");
-	DiscreteEvent e_b_close("b_close");
-	DiscreteEvent e_b_idle("b_idle");
+	DiscreteEvent turn_on("turn_on");
+	DiscreteEvent turn_off("turn_off");
 
-	t_valve.add_input_event(e_b_open);
-	t_valve.add_input_event(e_b_close);
-	t_valve.add_internal_event(e_b_idle);
+	t_valve.add_input_event(turn_on);
+	t_valve.add_input_event(turn_off);
 
 	//Registration of locations
-	DiscreteLocation b_opening("b_opening");
-	DiscreteLocation b_idle("b_idle");
-	DiscreteLocation b_closing("b_closing");
+	DiscreteLocation on("on");
+	DiscreteLocation off("off");
 
-	t_valve.new_mode(b_opening);
-	t_valve.new_mode(b_idle);
-	t_valve.new_mode(b_closing);
+	t_valve.new_mode(on);
+	t_valve.new_mode(off);
 
 	//Registration of dynamics
-	t_valve.set_dynamics(b_idle, b, 0.0);
-	t_valve.set_dynamics(b_closing, b, -1.0 / T);
-	t_valve.set_dynamics(b_opening, b, 1.0 / T);
+	t_valve.set_dynamics(off, b, 0.0);
+	t_valve.set_dynamics(on, b, 0.0);
 
 	//Registration of transitions
-	// Guards
-	RealExpression b_geq_one = b - 1.0; // a >= 1
-	RealExpression b_leq_zero = -b;		// a >= 0
 
 	//Resets
 	std::map<RealVariable, RealExpression> rst_b_one;
@@ -134,11 +125,11 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	std::map<RealVariable, RealExpression> rst_b_zero;
 	rst_b_zero[b] = 0.0; // a = 0
 
-	t_valve.new_forced_transition(e_b_idle, b_opening, b_idle, rst_b_one, b_geq_one);
-	t_valve.new_forced_transition(e_b_idle, b_closing, b_idle, rst_b_zero, b_leq_zero);
+	t_valve.new_unforced_transition(turn_on, off, on, rst_b_one);
+	t_valve.new_unforced_transition(turn_off, on, off, rst_b_zero);
 
-	t_valve.new_unforced_transition(e_b_open, b_idle, b_opening);
-	t_valve.new_unforced_transition(e_b_close, b_idle, b_closing);
+	// t_valve.new_unforced_transition(e_b_open, b_idle, b_opening);
+	// t_valve.new_unforced_transition(e_b_close, b_idle, b_closing);
 
 	//-------- Water valve controller --------
 	//Automaton
@@ -161,7 +152,7 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	//Transitions
 	//Invariants
 	RealExpression p_geq_pmin = (pmin - p);
-	RealExpression p_leq_pmax = (p - pmax); // x <= pmax 
+	RealExpression p_leq_pmax = (p - pmax); // x <= pmax
 
 	w_controller.new_invariant(p_rising, p_leq_pmax);
 	w_controller.new_invariant(p_falling, p_geq_pmin);
@@ -181,8 +172,8 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	t_controller.add_input_var(t);
 
 	//Registration of the events
-	t_controller.add_output_event(e_b_open);
-	t_controller.add_output_event(e_b_close);
+	t_controller.add_output_event(turn_on);
+	t_controller.add_output_event(turn_off);
 
 	//Registration of the locations
 	DiscreteLocation t_rising("t_rising");
@@ -203,14 +194,14 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	RealExpression t_geq_tmax = (t - tmax);
 	RealExpression t_leq_tmin = (tmin - t);
 
-	t_controller.new_unforced_transition(e_b_close, t_rising, t_falling, t_geq_tmax);
-	t_controller.new_unforced_transition(e_b_open, t_falling, t_rising, t_leq_tmin);
+	t_controller.new_unforced_transition(turn_off, t_rising, t_falling, t_geq_tmax);
+	t_controller.new_unforced_transition(turn_on, t_falling, t_rising, t_leq_tmin);
 
 	//Composition
-	HybridIOAutomaton dam_valve = compose("dam,valve",dam,w_valve,flow,a_idle);
-	HybridIOAutomaton dam_2valve = compose("dam,valve,valve",dam_valve,t_valve,DiscreteLocation("flow,a_idle"),b_idle);
-	HybridIOAutomaton dam_2valve_controller = compose("dam,valve,valve,controller",dam_2valve,w_controller,DiscreteLocation("flow,a_idle,b_idle"),p_falling);
-	HybridIOAutomaton system = compose("dam",dam_2valve_controller,t_controller,DiscreteLocation("flow,a_idle,b_idle,p_falling"),t_falling);
+	HybridIOAutomaton dam_valve = compose("dam,valve", dam, w_valve, flow, a_idle);
+	HybridIOAutomaton dam_2valve = compose("dam,valve,valve", dam_valve, t_valve, DiscreteLocation("flow,a_idle"), on);
+	HybridIOAutomaton dam_2valve_controller = compose("dam,valve,valve,controller", dam_2valve, w_controller, DiscreteLocation("flow,a_idle,off"), p_falling);
+	HybridIOAutomaton system = compose("dam", dam_2valve_controller, t_controller, DiscreteLocation("flow,a_idle,off,p_falling"), t_falling);
 
 	return system;
 }
