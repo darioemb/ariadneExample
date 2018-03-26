@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     cout << system << endl;
     
     HybridBoundedConstraintSet initial_set(system.state_space());
-    initial_set[DiscreteLocation("flow,a_idle,b_idle,p_falling,t_falling")] = Box(5, 0.0,0.0, 0.0,0.0, 10.0,100.0, 1.0,10.0, 25.0,30.0);
+    initial_set[DiscreteLocation("flow,a_idle,b_idle,p_falling,t_falling")] = Box(5, 0.0,0.0, 0.01,0.01, 1.0,100.0, 1.0,10.0, 25.0,30.0);
 
     analyse(system, initial_set, verb, plot_results);
     return 0;
