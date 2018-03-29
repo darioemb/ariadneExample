@@ -48,19 +48,19 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
 {
     cout << "1/6: Finite time upper evolution... " << endl
          << flush;
-    finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
+    //finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
     cout << "2/6: Finite time lower evolution... " << endl
          << flush;
-    finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    //finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "3/6: Infinite time outer evolution... " << endl
          << flush;
     //infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
-    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+    // infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "5/6: Safety verification... " << endl
          << flush;
-    safety_verification(system, initial_set, verbosity, plot_results);
+    // safety_verification(system, initial_set, verbosity, plot_results);
     cout << "6/6: Parametric safety verification... " << endl
          << flush;
     parametric_safety_verification(system, initial_set, verbosity, plot_results);
@@ -216,26 +216,26 @@ void parametric_safety_verification(HybridAutomatonInterface &system, HybridBoun
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 0.0001,200.0, 0.0001,20.0, 20.0,40.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 1.0,100.0, 1.0,10.0, 25.0,30.0));
     // Creates the safety constraint
     HybridConstraintSet safety_constraint = getSafetyConstraint(system);
 
     // The parameters which will be split into disjoint sets
     RealParameterSet parameters;
-    // parameters.insert(RealParameter("pmin", Interval(0.0, 1.0)));
+     parameters.insert(RealParameter("pmin", Interval(0.0, 1.0)));
     parameters.insert(RealParameter("pmax", Interval(8.0, 20.0)));
-    //parameters.insert(RealParameter("tmin", Interval(23.0,25.0)));
-    //parameters.insert(RealParameter("tmax", Interval(30.0,33.0)));
+    // parameters.insert(RealParameter("tmin", Interval(23.0,25.0)));
+    // parameters.insert(RealParameter("tmax", Interval(30.0,33.0)));
 
     // Initialization of the verifier
     Verifier verifier;
     verifier.verbosity = verbosity;
     verifier.settings().plot_results = plot_results;
     // The time (in seconds) after which we stop verification for this split parameters set and move to another set
-    verifier.ttl = 140;
+    verifier.ttl = 60;
     // The number of consecutive splittings for each parameter, i.e., 2^value.
     // In this case we allow 8x8 = 64 disjoint sets. The larger this number, the more accurate the result for each disjoint set.
-    verifier.settings().maximum_parameter_depth = 3;
+    verifier.settings().maximum_parameter_depth = 2;
 
     // Collects the verification input
     SafetyVerificationInput verInput(system, initial_set, domain, safety_constraint);
