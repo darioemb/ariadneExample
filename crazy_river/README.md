@@ -2,10 +2,10 @@
 The system described is a connected pools with a cleaner wich connects in feedback the flow.
  
 Here a graphical representation
-![Image of representation](tank_description.png)
+![Image of representation](.images/tank_description.png)
 ## Tanks
 *Tanks automaton* presents 3 tanks wich can overflow indipendently. If the first tank overflow water, the excedeed water go on tank number 2, viceversa for tanks number 2. If tank number 2 goes in overflow the excedeed water is lost. There is a fourth tank wich takes a costant flow from each of 3 tanks and purify it. It must garantee a minimal level of water to purify water.
-![Image of tanks automaton](tanks_automaton.png)
+![Image of tanks automaton](.images/tanks_automaton.png)
 
 **State description**
 $S_0$ := overflow nowhere

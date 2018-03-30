@@ -16,6 +16,10 @@ HybridIOAutomaton getSystem(RealVariable a, RealVariable b, RealVariable l, Real
 	dam.add_output_var(p);
 	dam.add_output_var(t);
 
+	//time fixed to first position
+	//RealVariable time("0");
+	// dam.add_output_var(time);
+
 	//Registration of events
 	//NO events
 
@@ -26,6 +30,7 @@ HybridIOAutomaton getSystem(RealVariable a, RealVariable b, RealVariable l, Real
 	dam.set_dynamics(flow, l, -alpha * a * l + epsilon);
 	dam.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
 	dam.set_dynamics(flow, t, beta * b * p - gamma * t);
+	// dam.set_dynamics(flow, time, 1);
 
     return dam;
 }

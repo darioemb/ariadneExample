@@ -8,7 +8,7 @@
 #include "valves.hh"
 namespace Ariadne
 {
-HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, double rho = 1.0, double alpha_val = 0.1, double beta_val = 0.1, double epsilon_lower = 0.01, double epsilon_upper = 0.1, double gamma_val = 0.01, double T_val = 2.0, double pmin_val = 1.0, double pmax_val = 10.0, double tmin_val = 25.0, double tmax_val = 30.0)
+HybridIOAutomaton getSystem(double g = 9.81, double eta = 0.85, double h = 1.0, double rho = 1.0, double alpha_val = 0.1, double beta_val = 0.1, double epsilon_lower = 0.01, double epsilon_upper = 0.1, double gamma_val = 0.01, double T_val = 2.0, double pmin_val = 1.0, double pmax_val = 10.0, double tmin_val = 25.0, double tmax_val = 30.0)
 {
 	//System variables
 	RealVariable a("a");
@@ -38,12 +38,12 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	DiscreteLocation t_falling("t_falling");
 
 	//External events
-	DiscreteEvent e_a_open("e_a_open");
-	DiscreteEvent e_a_close("e_a_close");
+	DiscreteEvent e_a_open("a_open");
+	DiscreteEvent e_a_close("a_close");
 	DiscreteEvent turn_on("turn_on");
 	DiscreteEvent turn_off("turn_off");
-	DiscreteEvent e_b_open("e_b_open");
-	DiscreteEvent e_b_close("e_b_close");
+	DiscreteEvent e_b_open("b_open");
+	DiscreteEvent e_b_close("b_close");
 
 	// Automaton registration
 	HybridIOAutomaton dam = Dam::getSystem(a, b, l, p, t, alpha, beta, psi, gamma, epsilon, flow);
@@ -55,7 +55,7 @@ HybridIOAutomaton getSystem(double g = 9.82, double eta = 0.85, double h = 1.0, 
 	HybridIOAutomaton t_valve = TemperatureValve::getSystem(b, turn_on, turn_off, on);
 	//-------- Water valve controller --------
 	//Automaton
-	HybridIOAutomaton w_controller = WaterController::getSystem(p, pmin, pmax, delta, e_b_open, e_b_close, p_falling);
+	HybridIOAutomaton w_controller = WaterController::getSystem(p, pmin, pmax, delta, e_a_open, e_a_close, p_falling);
 
 	//-------- Temperature valve controller --------
 	//Automaton

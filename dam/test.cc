@@ -16,6 +16,9 @@ int main(int argc, char **argv)
     
     HybridBoundedConstraintSet initial_set(system.state_space());
     initial_set[DiscreteLocation("flow,a_idle,off,p_falling,t_falling")] = Box(5, 0.0,0.0, 0.0,0.0, 1.0,100.0, 1.0,10.0, 25.0,30.0);
+    
+    //with time fixed to first position
+    //initial_set[DiscreteLocation("flow,a_idle,off,p_falling,t_falling")] = Box(6, 0.0,0.0, 0.0,0.0, 0.0,0.0, 1.0,100.0, 1.0,10.0, 25.0,30.0);
 
     analyse(system, initial_set, verb, plot_results);
     return 0;

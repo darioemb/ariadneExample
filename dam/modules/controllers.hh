@@ -3,7 +3,7 @@
 
 namespace WaterController
 {
-HybridIOAutomaton getSystem(RealVariable p, RealParameter pmin, RealParameter pmax, RealParameter delta, DiscreteEvent e_open, DiscreteEvent e_close, DiscreteLocation p_falling)
+HybridIOAutomaton getSystem(RealVariable p, RealParameter pmin, RealParameter pmax, RealParameter delta, DiscreteEvent e_a_open, DiscreteEvent e_a_close, DiscreteLocation p_falling)
 {
   	// 1.Automaton
 	HybridIOAutomaton controller("w_controller");
@@ -12,8 +12,8 @@ HybridIOAutomaton getSystem(RealVariable p, RealParameter pmin, RealParameter pm
 	controller.add_input_var(p);
 
 	// 3.Registration of the events
-	controller.add_output_event(e_open);
-	controller.add_output_event(e_close);
+	controller.add_output_event(e_a_open);
+	controller.add_output_event(e_a_close);
 
 	// 4.Registration of the locations
 	DiscreteLocation p_rising("p_rising");
@@ -33,8 +33,8 @@ HybridIOAutomaton getSystem(RealVariable p, RealParameter pmin, RealParameter pm
 	RealExpression p_geq_pmax = (p - pmax);
 	RealExpression p_leq_pmin = (pmin - p);
 
-	controller.new_unforced_transition(e_close, p_rising, p_falling, p_geq_pmax);
-	controller.new_unforced_transition(e_open, p_falling, p_rising, p_leq_pmin);
+	controller.new_unforced_transition(e_a_close, p_rising, p_falling, p_geq_pmax);
+	controller.new_unforced_transition(e_a_open, p_falling, p_rising, p_leq_pmin);
 
     return controller;
 }
