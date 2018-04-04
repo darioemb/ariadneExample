@@ -9,8 +9,8 @@ HybridIOAutomaton getSystem(RealVariable a, RealVariable z1, RealVariable z2, Re
     // 1.Automaton registration
     HybridIOAutomaton crazy_river("crazy_river");
 
-    //tmp 
-    RealVariable time("time");
+    //tmp
+    RealVariable time("0");
 
     // 2.Registration of input/output variables
     crazy_river.add_input_var(a);
@@ -57,50 +57,50 @@ HybridIOAutomaton getSystem(RealVariable a, RealVariable z1, RealVariable z2, Re
     crazy_river.set_dynamics(S0, z1, -alpha1 * z1 + beta1 * a);
     crazy_river.set_dynamics(S0, z2, -alpha2 * z2 + beta2 * a);
     crazy_river.set_dynamics(S0, z3, -alpha3 * z3 + beta3 * a);
-    crazy_river.set_dynamics(S0, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S0,time,1);
+    crazy_river.set_dynamics(S0, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S0, time, 1);
     //overflow 1
     crazy_river.set_dynamics(S1, z1, 0);
-    crazy_river.set_dynamics(S1, z2, -alpha2 * z2 + beta2 * a + beta1 * a - alpha1 * z1);
+    crazy_river.set_dynamics(S1, z2, -alpha2 * z2 + beta2 * a + beta1 * a + (alpha1/2) * z1);
     crazy_river.set_dynamics(S1, z3, -alpha3 * z3 + beta3 * a);
-    crazy_river.set_dynamics(S1, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S1,time,1);
+    crazy_river.set_dynamics(S1, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S1, time, 1);
     //overflow 2
     crazy_river.set_dynamics(S2, z1, -alpha1 * z1 + beta1 * a);
     crazy_river.set_dynamics(S2, z2, 0);
     crazy_river.set_dynamics(S2, z3, -alpha3 * z3 + beta3 * a - alpha2 * z2 + beta2 * a);
-    crazy_river.set_dynamics(S2, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S2,time,1);
+    crazy_river.set_dynamics(S2, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S2, time, 1);
     //overflow 3
     crazy_river.set_dynamics(S3, z1, -alpha1 * z1 + beta1 * a);
     crazy_river.set_dynamics(S3, z2, -alpha2 * z2 + beta2 * a);
     crazy_river.set_dynamics(S3, z3, 0);
-    crazy_river.set_dynamics(S3, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S3,time,1);
+    crazy_river.set_dynamics(S3, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S3, time, 1);
     //overflow 1,2
     crazy_river.set_dynamics(S4, z1, 0);
     crazy_river.set_dynamics(S4, z2, 0);
-    crazy_river.set_dynamics(S4, z3, -alpha3 * z3 + beta3 * a - alpha2 * z2 + beta2 * a - alpha1 * z1 + beta1 * a);
-    crazy_river.set_dynamics(S4, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S4,time,1);
+    crazy_river.set_dynamics(S4, z3, -alpha3 * z3 + beta3 * a - alpha2 * z2 + beta2 * a + (alpha1/2) * z1 + beta1 * a);
+    crazy_river.set_dynamics(S4, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S4, time, 1);
     //overflow 1,3
     crazy_river.set_dynamics(S5, z1, 0);
     crazy_river.set_dynamics(S5, z2, -alpha2 * z2 + beta2 * a + beta1 * a - alpha1 * z1);
     crazy_river.set_dynamics(S5, z3, 0);
-    crazy_river.set_dynamics(S5, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S5,time,1);
+    crazy_river.set_dynamics(S5, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S5, time, 1);
     //overflow 2,3
     crazy_river.set_dynamics(S6, z1, -alpha1 * z1 + beta1 * a);
     crazy_river.set_dynamics(S6, z2, 0);
     crazy_river.set_dynamics(S6, z3, 0);
-    crazy_river.set_dynamics(S6, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S6,time,1);
+    crazy_river.set_dynamics(S6, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S6, time, 1);
     //overflow 1,2,3
     crazy_river.set_dynamics(S7, z1, 0);
     crazy_river.set_dynamics(S7, z2, 0);
     crazy_river.set_dynamics(S7, z3, 0);
-    crazy_river.set_dynamics(S7, z4, alpha1 * z1 + alpha2 * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
-    crazy_river.set_dynamics(S7,time,1);
+    crazy_river.set_dynamics(S7, z4, (alpha1/2) * z1 + (alpha2/2) * z2 + alpha3 * z3 - beta1 * a - beta2 * a - beta3 * a);
+    crazy_river.set_dynamics(S7, time, 1);
 
     //guards
     RealExpression guard_a = z1 - H1;                  //!< z>=H

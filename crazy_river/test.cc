@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
-    initial_set[DiscreteLocation("S0,idle,rising")] = Box(6, 1.0,1.0, 0.0,0.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0);
+    initial_set[DiscreteLocation("S0,idle,rising")] = Box(6, 0.0,0.0, 1.0,1.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0);
 
     //initial_set[DiscreteLocation("no_overflow,i_idle,o_idle,i_falling,o_rising")] = Box(5, 0.0, 0.0, 1.0,1.0, 1.0, 2.0, 1.0, 2.0, 4.0,10.0);
     //initial_set[DiscreteLocation("no_overflow,i_idle,o_idle,i_falling,o_falling")] = Box(4, 0.0, 0.0, 0.0,0.0, 1.0, 2, 1.0, 2);
