@@ -8,7 +8,6 @@
 #include "valves.hh"
 namespace Ariadne
 {
-//!< alpha1_i_val : uscita z_i; beta_i_val : ingresso z_i
 HybridIOAutomaton getSystem(double alpha1_val = 0.02, double alpha2_val = 0.02, double beta1_val = 0.03, double beta2_val = 0.03, double beta3_val = 0.03, double gamma1_val = 0.02, double gamma2_val = 0.02,double gamma3_val = 0.02, double T_val = 4.0, double hmin_val = 1.0, double hmax_val = 2.0, double delta_val = 0.1, double H1_val = 1.90, double H2_val = 1.90, double H3_val = 1.90)
 {
 	//System variables
