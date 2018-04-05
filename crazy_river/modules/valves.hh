@@ -3,7 +3,12 @@
 
 namespace Valve
 {
-HybridIOAutomaton getSystem(RealVariable a, RealParameter T, DiscreteEvent e_open,DiscreteEvent e_close, DiscreteLocation idle)
+HybridIOAutomaton getSystem(
+    RealVariable a, 
+    RealParameter T, 
+    DiscreteEvent e_open,
+    DiscreteEvent e_close, 
+    DiscreteLocation idle)
 {
     // 1.Automaton registration
     HybridIOAutomaton valve("valve");
@@ -12,7 +17,7 @@ HybridIOAutomaton getSystem(RealVariable a, RealParameter T, DiscreteEvent e_ope
     valve.add_output_var(a);
 
     // 3.Registration of input/output internal events
-    DiscreteEvent e_idle("idle");
+    DiscreteEvent e_idle("e_idle");
 
     valve.add_input_event(e_open);
     valve.add_input_event(e_close);
