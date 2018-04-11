@@ -54,14 +54,13 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
     finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "3/6: Infinite time outer evolution... " << endl
          << flush;
-         return;
-    //infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
+    infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
-    // infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "5/6: Safety verification... " << endl
          << flush;
-    // safety_verification(system, initial_set, verbosity, plot_results);
+    safety_verification(system, initial_set, verbosity, plot_results);
     cout << "6/6: Parametric safety verification... " << endl
          << flush;
     parametric_safety_verification(system, initial_set, verbosity, plot_results);
@@ -90,7 +89,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(200.0, 30);
+    HybridTime evol_limits(20.0, 30);
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;
@@ -138,10 +137,10 @@ void infinite_time_outer_evolution(HybridAutomatonInterface &system, HybridBound
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 0.5,200.0, 0.5,20.0, 25.0,31.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 1.0,3.0, 1.0,3.0, 1.0,3.0, 1.0,3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
-    int accuracy = 0;
+    int accuracy = 1;
 
     // Creates an analyser with the required arguments
     HybridReachabilityAnalyser analyser(system, domain, accuracy);
@@ -163,11 +162,10 @@ void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, Hyb
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-
-    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 0.0001,200.0, 0.0001,20.0, 20.0,40.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
-    int accuracy = 2;
+    int accuracy = 3;
 
     // Creates an analyser with the required arguments
     HybridReachabilityAnalyser analyser(system, domain, accuracy);
@@ -191,7 +189,7 @@ void safety_verification(HybridAutomatonInterface &system, HybridBoundedConstrai
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 0.0001,200.0, 0.0001,20.0, 20.0,40.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0));
     // Creates the safety constraint
     HybridConstraintSet safety_constraint = getSafetyConstraint(system);
 
@@ -217,26 +215,24 @@ void parametric_safety_verification(HybridAutomatonInterface &system, HybridBoun
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 0.0,1.0, 1.0,100.0, 1.0,10.0, 25.0,30.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0));
     // Creates the safety constraint
     HybridConstraintSet safety_constraint = getSafetyConstraint(system);
 
     // The parameters which will be split into disjoint sets
     RealParameterSet parameters;
-     parameters.insert(RealParameter("pmin", Interval(0.0, 1.0)));
-    parameters.insert(RealParameter("pmax", Interval(8.0, 20.0)));
-    // parameters.insert(RealParameter("tmin", Interval(23.0,25.0)));
-    // parameters.insert(RealParameter("tmax", Interval(30.0,33.0)));
+    parameters.insert(RealParameter("hmin", Interval(0.0, 1.0)));
+    parameters.insert(RealParameter("hmax", Interval(2.0, 2.5)));
 
     // Initialization of the verifier
     Verifier verifier;
     verifier.verbosity = verbosity;
     verifier.settings().plot_results = plot_results;
     // The time (in seconds) after which we stop verification for this split parameters set and move to another set
-    verifier.ttl = 60;
+    verifier.ttl = 140;
     // The number of consecutive splittings for each parameter, i.e., 2^value.
     // In this case we allow 8x8 = 64 disjoint sets. The larger this number, the more accurate the result for each disjoint set.
-    verifier.settings().maximum_parameter_depth = 2;
+    verifier.settings().maximum_parameter_depth = 3;
 
     // Collects the verification input
     SafetyVerificationInput verInput(system, initial_set, domain, safety_constraint);
@@ -262,32 +258,34 @@ HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface &system)
 
     // Constructs the variable list, required by the vector function
     RealVariable a("a");
-    RealVariable b("b");
-    RealVariable l("l");
-    RealVariable p("p");
-    RealVariable t("t");
+    RealVariable z1("z1");
+    RealVariable z2("z2");
+    RealVariable z3("z3");
+    RealVariable z4("z4");
 
     List<RealVariable> varlist;
     // The variables MUST be appended in the same order as the one used internally by the system,
     // i.e., in alphabetical order
     varlist.append(a);
-    varlist.append(b);
-    varlist.append(l);
-    varlist.append(p);
-    varlist.append(t);
+    varlist.append(z1);
+    varlist.append(z2);
+    varlist.append(z3);
+    varlist.append(z4);
 
     // Constructs the expression
-    RealExpression expr1 = l;
-    RealExpression expr2 = p;
-    RealExpression expr3 = t;
+    RealExpression expr1 = z1;
+    RealExpression expr2 = z2;
+    RealExpression expr3 = z3;
+    RealExpression expr4 = z4;
     List<RealExpression> consexpr;
     consexpr.append(expr1);
     consexpr.append(expr2);
     consexpr.append(expr3);
+    consexpr.append(expr4);
 
     VectorFunction cons_f(consexpr, varlist);
     // Constructs the codomain for the expression
-    Box codomain(3, 0.5,150.0, 0.5,15.0, 23.5,33.5);
+    Box codomain(3, 0.5,3.5, 0.5,3.5, 0.5,3.5, 0.5,3.5);
 
     // Constructs a costraint set and then applies it to each location of the system
     return HybridConstraintSet(system.state_space(), ConstraintSet(cons_f, codomain));

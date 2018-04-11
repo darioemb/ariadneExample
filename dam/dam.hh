@@ -8,7 +8,7 @@
 #include "valves.hh"
 namespace Ariadne
 {
-HybridIOAutomaton getSystem(double g = 9.81, double eta = 0.85, double h = 1.0, double rho = 1.0, double alpha_val = 0.1, double beta_val = 0.1, double epsilon_lower = 0.01, double epsilon_upper = 0.1, double gamma_val = 0.01, double T_val = 2.0, double pmin_val = 1.0, double pmax_val = 10.0, double tmin_val = 25.0, double tmax_val = 30.0)
+HybridIOAutomaton getSystem(double g = 9.81, double eta = 0.85, double h = 1.0, double rho = 1.0, double alpha_val = 0.1, double beta_val = 0.1, double epsilon_val = 1.0, double gamma_val = 0.01, double T_val = 2.0, double pmin_val = 1.0, double pmax_val = 10.0, double tmin_val = 25.0, double tmax_val = 30.0)
 {
 	//System variables
 	RealVariable a("a");
@@ -21,7 +21,7 @@ HybridIOAutomaton getSystem(double g = 9.81, double eta = 0.85, double h = 1.0, 
 	RealParameter alpha("alpha", alpha_val);
 	RealParameter beta("beta", beta_val);
 	RealParameter psi("psi", g * eta * h * rho);
-	RealParameter epsilon("epsilon", 1.0); //Interval(epsilon_lower, epsilon_upper));
+	RealParameter epsilon("epsilon", epsilon_val); //Interval(epsilon_lower, epsilon_upper));
 	RealParameter gamma("gamma", gamma_val);
 	RealParameter T("T", T_val);
 	RealParameter pmin("pmin", pmin_val);

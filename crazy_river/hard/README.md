@@ -33,37 +33,3 @@ The controller check if one of a water level of the 3 tank in overflow is lower 
 
 ## Valve
 The valve has a variable (a) wich describes opening and closing states used by controller.
-
-# Semplified crazy river
-To semplify the execution the third tank is deleted and a time calculation is added:
-
-**State description**
-$S_0$ := overflow nowhere
-$S_1$ := overflow only on first tank
-$S_2$ := overflow only on second tank
-$S_4$ := overflow on first and second tank
-
-**Transition table:**
-
-|   | S0 | S1 | S2 | S4 | 
-|---|----|----|----|----|
-| a := $z_1>H_1$| S1 | -  | S4 | - |
-| b := $z_2>H_2$ | S2 | S4 | -  | - |
-| d := $ \beta_1 * a + \alpha_1 * z_1 < 0 $ | -  | S0 | - | S2 |
-| e :=  $ \beta_2 * a + \alpha_2 * z_2 < 0 $ | -  | -  | S0 | S1 |
-
-## Time analysis
-Per la simulazione si è scelto di partire da due stati:
-- S0,idle,falling (quindi nesssun overflow e valvole spente)
-- S0,idle,rising (quindi nessun overflow e valvole accese)
-Di seguito sono rappresentate entrambe le tracce nel range [0,60] secondi.
-**a(time)**
-![a(t)](.images/t_a.png)
-**z1(time)**
-![b(t)](.images/t_z1.png)
-**z2(time)**
-![l(t)](.images/t_z2.png)
-**z4(time)**
-![p(t)](.images/t_z4.png)
-
-I grafici certificano quanto ipotizzato, il depuratore aprendo la valvola si svuota ma contemporaneamente riempe le altre valvole e successivamente queste ristabilizzano il livello del depuratore.
