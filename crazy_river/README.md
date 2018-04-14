@@ -29,8 +29,7 @@ $S_7$ := overflow on every tank
 | f :=  $ \beta_3 * a + \alpha_3 * z_3 < 0 $ | -  | -  | -  | S0 | -  | S1 | S2 | S4 |
 
 ## Controller
-The controller check if one of a water level of the 3 tank in overflow is lower or greater than $ h_{min} $ or $ h_{max} $ respectively.
-
+To simplify the controller execution, only the first tank is under lower control (wich means if $ z_1 < h_{min} $ then open valve $ a $), and the third tank is under upper control (wich means if $ z3 > H3 $ the close valve $ a $). This is correct in this context because the assumption is that first tank has the bigger output flow, so the overflow can fill the others lack.
 ## Valve
 The valve has a variable (a) wich describes opening and closing states used by controller.
 
@@ -66,4 +65,4 @@ Di seguito sono rappresentate entrambe le tracce nel range [0,60] secondi.
 **z4(time)**
 ![p(t)](.images/t_z4.png)
 
-I grafici certificano quanto ipotizzato, il depuratore aprendo la valvola si svuota ma contemporaneamente riempe le altre valvole e successivamente queste ristabilizzano il livello del depuratore.
+The graphs certify what was hypothesized, the purifier opening the valve empties but at the same time fills the other valves and subsequently they re-establish the level of the purifier.

@@ -22,3 +22,5 @@ Here a graphical representation
 ![p(t)](.images/t_p.png)
 **t(time)**
 ![t(t)](.images/t_t.png)
+
+As expected the execution is periodic in absence of external disturbance.

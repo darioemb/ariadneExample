@@ -27,3 +27,17 @@ sudo make install
 ```
 export LD_LIBRARY_PATH=/usr/local/lib
 ```
+
+## Compilation
+
+- Create the build directory
+```
+mkdir build && cd build
+```
+- Generate makefile files
+```
+make -j
+```
+- Binary files are inside `bin` directory
+
+To understand what binaries do, check the relative descriptions inside relative directories.

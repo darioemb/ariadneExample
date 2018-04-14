@@ -1,10 +1,11 @@
-# Crazy river
-The system described is a connected pools with a cleaner wich connects in feedback the flow.
+# Scottland issue
+The system is created composing crazy river (easy version) with a stormy weather.
+The stormy weather is described as a an automaton wich models a sawtooth or a sinusoidal function.
  
 Here a graphical representation
 ![Image of representation](.images/tank_description.png)
 ## Tanks
-*Tanks automaton* presents 3 tanks wich can overflow indipendently. If the first tank overflow water, the excedeed water go on tank number 2, viceversa for tanks number 2. If tank number 2 goes in overflow the excedeed water is lost. There is a fourth tank wich takes a costant flow from each of 3 tanks and purify it. It must garantee a minimal level of water to purify water.
+*Tanks automaton* presents 2 tanks wich can overflow indipendently. If the first tank overflow water, the excedeed water go on tank number 2. If tank number 2 goes in overflow the excedeed water is lost. There is a third tank wich takes a costant flow from each of 2 tanks and purify it. It must garantee a minimal level of water to purify water.
 ![Image of tanks automaton](.images/tanks_automaton.png)
 
 **State description**
@@ -33,3 +34,16 @@ The controller check if one of a water level of the 3 tank in overflow is lower 
 
 ## Valve
 The valve has a variable (a) wich describes opening and closing states used by controller.
+
+## Time execution
+Here below a set of reacheble sets in finite time execution [0,30] with an upper semantics.
+**a(time)**
+![a(t)](.images/t_a.png)
+**z1(time)**
+![b(t)](.images/t_z1.png)
+**z2(time)**
+![l(t)](.images/t_z2.png)
+**z3(time)**
+![p(t)](.images/t_z3.png)
+**w(time)**
+![p(t)](.images/t_z3.png)
