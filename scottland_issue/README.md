@@ -46,4 +46,4 @@ Here below a set of reacheble sets in finite time execution [0,30] with an upper
 **z3(time)**
 ![p(t)](.images/t_z3.png)
 **w(time)**
-![p(t)](.images/t_z3.png)
+![p(t)](.images/t_w.png)
