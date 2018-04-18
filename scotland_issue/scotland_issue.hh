@@ -51,7 +51,7 @@ HybridIOAutomaton getSystem(
 
 	// Tanks
 	DiscreteLocation S0("S0");
-	HybridIOAutomaton crazy_river = ScottlandIssue::getSystem(a, z1, z2, z4, w, alpha1, beta1, beta2, gamma1, gamma2, T, hmin, hmax, delta, H1, H2, stormySize, S0);
+	HybridIOAutomaton crazy_river = ScotlandIssue::getSystem(a, z1, z2, z4, w, alpha1, beta1, beta2, gamma1, gamma2, T, hmin, hmax, delta, H1, H2, stormySize, S0);
 
 	DiscreteLocation tick("tick");
 	HybridIOAutomaton tick_s = StormyWeather::getSystem(w, sunny, tick, treshold);
@@ -66,7 +66,7 @@ HybridIOAutomaton getSystem(
 
 	HybridIOAutomaton tank_valve = compose("tanks,valve", crazy_river, valve_in, S0, idle);
 	HybridIOAutomaton tick_valve = compose("tick_valve",tank_valve, tick_s, DiscreteLocation("S0,idle"), tick);
-	HybridIOAutomaton system = compose("scottland_issue", tick_valve, controller_valve, DiscreteLocation("S0,idle,tick"), rising);
+	HybridIOAutomaton system = compose("scotland_issue", tick_valve, controller_valve, DiscreteLocation("S0,idle,tick"), rising);
 
 	return system;
 }

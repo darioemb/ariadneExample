@@ -1,5 +1,5 @@
 #include <ariadne.h>
-#include "scottland_issue.hh"
+#include "scotland_issue.hh"
 #include "analysis.hh" // Custom analysis routines to be run
 
 int main(int argc, char **argv)

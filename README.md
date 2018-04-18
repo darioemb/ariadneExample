@@ -40,4 +40,4 @@ make -j
 ```
 - Binary files are inside `bin` directory
 
-To understand what binaries do, check the relative descriptions inside relative directories.
+To understand what binaries do, check the relative descriptions inside relative wiki pages.
