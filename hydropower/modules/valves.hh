@@ -1,44 +1,14 @@
 #pragma once
 #include <ariadne.h>
 
-namespace TemperatureValve
-{
-HybridIOAutomaton getSystem(RealVariable b, DiscreteEvent turn_on,DiscreteEvent turn_off, DiscreteLocation on)
-{
-    HybridIOAutomaton valve("t_valve");
-
-	valve.add_output_var(b);
-
-	valve.add_input_event(turn_on);
-	valve.add_input_event(turn_off);
-
-	//Registration of locations
-	DiscreteLocation off("off");
-
-	valve.new_mode(on);
-	valve.new_mode(off);
-
-	//Registration of dynamics
-	valve.set_dynamics(off, b, 0.0);
-	valve.set_dynamics(on, b, 0.0);
-
-	//Registration of transitions
-
-	//Resets
-	std::map<RealVariable, RealExpression> rst_b_one;
-	rst_b_one[b] = 1.0; // a = 1
-	std::map<RealVariable, RealExpression> rst_b_zero;
-	rst_b_zero[b] = 0.0; // a = 0
-
-	valve.new_unforced_transition(turn_on, off, on, rst_b_one);
-	valve.new_unforced_transition(turn_off, on, off, rst_b_zero);
-
-    return valve;
-}
-}
 namespace WaterValve
 {
-HybridIOAutomaton getSystem(RealVariable a, RealParameter T, DiscreteEvent e_a_open, DiscreteEvent e_a_close, DiscreteLocation a_idle)
+HybridIOAutomaton getSystem(
+	RealVariable a, 
+	RealParameter T, 
+	DiscreteEvent e_a_open, 
+	DiscreteEvent e_a_close, 
+	DiscreteLocation a_idle)
 {
     HybridIOAutomaton valve("w_valve");
 

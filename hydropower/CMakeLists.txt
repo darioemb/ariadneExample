@@ -1,7 +1,7 @@
 include_directories(modules)
 
 # Set the executable along with the required source files
-add_executable(dam test.cc)
+add_executable(hydropower test.cc)
 
 # Instruct to link against the ariadne library, and the bdd library
-target_link_libraries(dam ariadne bdd)
+target_link_libraries(hydropower ariadne bdd)
