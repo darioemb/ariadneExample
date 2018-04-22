@@ -14,13 +14,13 @@ HybridIOAutomaton getSystem(
 	double beta1_val = 0.08, 
 	double beta2_val = 0.08, 
 	double T_val = 4.0, 
-	double hmin1_val = 0.001, 
-	double hmax1_val = 4.0001,
-	double hmin2_val = 4.01, 
+	double hmin1_val = 0.1, 
+	double hmax1_val = 4.0,
+	double hmin2_val = 4.0, 
 	double hmax2_val = 7.0,  
 	double delta_val = 0.01,
-	double baseLevel1_val = 0.0,
-	double baseLevel2_val = 3.91)
+	double baseLevel1_val = 0.1,
+	double baseLevel2_val = 4.5)
 {
 	//System variables
 	RealVariable a1("a1");
@@ -67,7 +67,7 @@ HybridIOAutomaton getSystem(
 
 	// Controller
 	DiscreteLocation on_first("on_first");
-	HybridIOAutomaton controller = controller::getSystem( z1,z2,a1, a2, hmin1,hmax1,hmin2,hmax2,delta,e_a1_open,e_a1_close, e_a2_open, e_a2_close,on_first);
+	HybridIOAutomaton controller = controller::getSystem( z1,z2,a1, a2, baseLevel1,hmax1,baseLevel2,hmax2,delta,e_a1_open,e_a1_close, e_a2_open, e_a2_close,on_first);
 	
 	
 

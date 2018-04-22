@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 
     bool plot_results = true;
 
-    HybridIOAutomaton system = Ariadne::getSystem(0.08,0.08,0.8,0.8);
+    HybridIOAutomaton system = Ariadne::getSystem(0.08,0.08,1.0,1.0,4.0);
 
     cout << system << endl;
 
