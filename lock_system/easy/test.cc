@@ -9,12 +9,12 @@ int main(int argc, char **argv)
 
     bool plot_results = true;
 
-    HybridIOAutomaton system = Ariadne::getSystem(0.08,0.08,1.0,1.0,4.0);
+    HybridIOAutomaton system = Ariadne::getSystem();
 
     cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
-    initial_set[DiscreteLocation("S0,a1_idle,a2_idle,on_first")] = Box(4, 1.0,1.0, 0.0,0.0, 0.0,0.0, 3.9,3.91);
+    initial_set[DiscreteLocation("S1,a_idle,on_first")] = Box(3, 0.0,0.0, 1.0,1.0, 0.16,0.16);
 
 
     // initial_set[DiscreteLocation("S0,idle,two_falling")] = Box(3, 0.0,0.0, 2.5,3.5, 3.5,6.5);
