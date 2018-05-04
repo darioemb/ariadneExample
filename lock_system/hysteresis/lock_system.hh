@@ -4,7 +4,7 @@
 #pragma once
 #include <ariadne.h>
 #include "controllers.hh"
-#include "tanks.hh"
+#include "plants.hh"
 #include "valves.hh"
 namespace Ariadne
 {
@@ -49,6 +49,8 @@ HybridIOAutomaton getSystem(
 	DiscreteLocation on_first("on_first");
 	HybridIOAutomaton controller = controller::getSystem( z,a,baseLevel,targetLevel,delta,e_a_open,e_a_close,on_first);
 	
+	HybridIOAutomaton tmp = compose("cc",lock_system,controller,S0,on_first);
+	std::cout<<tmp<<"\n-------------";
 	
 
 	//Compose of all components

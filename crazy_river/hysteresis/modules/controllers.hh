@@ -32,18 +32,18 @@ HybridIOAutomaton getSystem(
 
 	// 5.Transitions
 	// Invariants
-	RealExpression z_geq_hmin = (hmin - delta - z1) ; // x >= hmin - delta
-	RealExpression z_leq_hmax = (z2 - hmax - delta) ; // x <= hmax + delta
+	// RealExpression z_geq_hmin = (hmin - delta - z2) ; // x >= hmin - delta
+	// RealExpression z_leq_hmax = (z2 - hmax - delta) ; // x <= hmax + delta
 
-	controller.new_invariant(rising, z_leq_hmax);
-	controller.new_invariant(falling, z_geq_hmin);
+	// controller.new_invariant(rising, z_leq_hmax);
+	// controller.new_invariant(falling, z_geq_hmin);
 
 	// Guards
-	RealExpression z_geq_hmax = (z2 - hmax + delta) ; // z1 >= hmax - delta
-	RealExpression z_leq_hmin = (hmin + delta - z1) ; // z1 <= hmin + delta
+	RealExpression z_geq_hmax = (z2 - hmax -delta ) ; // z1 >= hmax - delta
+	RealExpression z_leq_hmin = (hmin - z2 + delta) ; // z1 <= hmin + delta
 
-	controller.new_unforced_transition(e_close, rising, falling, z_geq_hmax);
-	controller.new_unforced_transition(e_open, falling, rising, z_leq_hmin);
+	controller.new_forced_transition(e_close, rising, falling, z_geq_hmax);
+	controller.new_forced_transition(e_open, falling, rising, z_leq_hmin);
 
     return controller;
 }

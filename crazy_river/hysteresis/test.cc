@@ -10,13 +10,13 @@ int main(int argc, char **argv)
 
     bool plot_results = true;
 
-    HybridIOAutomaton system = Ariadne::getSystem(0.01,0.06,0.02,0.01,0.01,2.0,1.0,2.0,0.01,1.9,1.9);
+    HybridIOAutomaton system = Ariadne::getSystem();
 
     cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
-    initial_set[DiscreteLocation("S0,idle,rising")] = Box(5, 0.0,0.0, 1.0,1.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0);
-    initial_set[DiscreteLocation("S0,idle,falling")] = Box(5, 0.0,0.0, 0.0,0.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0);
+    // initial_set[DiscreteLocation("S0,idle,rising")] = Box(5, 0.0,0.0, 1.0,1.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0);
+    initial_set[DiscreteLocation("no_overflow,idle,falling")] = Box(5, 0.0,0.0, 0.0,0.0, 1.5,2.0, 1.5,2.0, 1.0, 2.0);
 
     analyse(system, initial_set, verb, plot_results);
     return 0;

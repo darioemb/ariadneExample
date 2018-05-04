@@ -19,9 +19,8 @@ HybridIOAutomaton getSystem(
     lock_system.add_input_var(a);
     lock_system.add_output_var(z);
 
-    //time
-    RealVariable time("0");
-    lock_system.add_output_var(time);
+    // RealVariable time("0");
+    // lock_system.add_output_var(time);
     
     
     DiscreteEvent e_a("e_a");
@@ -42,22 +41,22 @@ HybridIOAutomaton getSystem(
     
     //empty initial tank
     lock_system.set_dynamics(S0, z, beta * a);
-    lock_system.set_dynamics(S0, time,1);
+    // lock_system.set_dynamics(S0, time,1);
     
     //tank1 not empty
     lock_system.set_dynamics(S1, z, -alpha * z + beta * a );
-    lock_system.set_dynamics(S1, time,1);
+    // lock_system.set_dynamics(S1, time,1);
 
     // RealParameter epsilon("epsilon",0.001);
 
     //guards
     RealExpression guard_a = z - baseLevel;      
     
-    RealExpression guard_b = -z;
+    RealExpression guard_b = -z + baseLevel;
 
     std::map<RealVariable, RealExpression> reset;
     reset[z] = z;
-    reset[time]=time;
+    // // reset[time]=time;
     
 
     lock_system.new_forced_transition(e_a, S0, S1,  reset, guard_a);

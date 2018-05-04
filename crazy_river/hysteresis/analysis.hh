@@ -51,16 +51,17 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
     finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
     cout << "2/6: Finite time lower evolution... " << endl
          << flush;
-    //finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    return;
     cout << "3/6: Infinite time outer evolution... " << endl
          << flush;
-    //infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
+    infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
-    //infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
+    infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
     cout << "5/6: Safety verification... " << endl
          << flush;
-    //safety_verification(system, initial_set, verbosity, plot_results);
+    safety_verification(system, initial_set, verbosity, plot_results);
     cout << "6/6: Parametric safety verification... " << endl
          << flush;
     parametric_safety_verification(system, initial_set, verbosity, plot_results);
@@ -89,7 +90,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(200.0, 20);
+    HybridTime evol_limits(40.0, 8);
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;
@@ -137,7 +138,7 @@ void infinite_time_outer_evolution(HybridAutomatonInterface &system, HybridBound
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(3, 0.0,1.0, 1.0,3.0, 1.0,3.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0,1.0, 1.0,3.0, 1.0,3.0, 1.0,3.0, 1.0,3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
     int accuracy = 1;
@@ -162,7 +163,7 @@ void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, Hyb
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(3, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0));
+    HybridBoxes domain(system.state_space(), Box(5, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0, 0.5, 3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
     int accuracy = 3;
