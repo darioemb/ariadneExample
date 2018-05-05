@@ -6,7 +6,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 project(${PROJECT} CXX)
 
-add_subdirectory(hydropower)
+add_subdirectory(hydropower/linear)
+add_subdirectory(hydropower/self_loop)
 add_subdirectory(scotland_issue)
 add_subdirectory(crazy_river/hysteresis)
 add_subdirectory(lock_system/hysteresis)

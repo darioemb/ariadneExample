@@ -9,17 +9,17 @@
 namespace Ariadne
 {
 HybridIOAutomaton getSystem(
-	double g = 9.81, 
-	double eta = 0.85, 
-	double h = 1.0, 
-	double rho = 1.0, 
-	double alpha_val = 0.1, 
-	double beta_val = 0.1, 
-	double epsilon_val = 1.0, 
-	double gamma_val = 0.01, 
-	double T_val = 2.0, 
-	double pmin_val = 1.0, 
-	double pmax_val = 10.0)
+	double g = 9.81,
+	double eta = 0.85,
+	double h = 10.0,
+	double rho = 1000.0,
+	double alpha_val = 0.01,
+	double beta_val = 0.1,
+	double epsilon_val = 0.2,
+	double gamma_val = 0.01,
+	double T_val = 4.0,
+	double pmin_val = 200.0,
+	double pmax_val = 4000.0)
 {
 	//System variables
 	RealVariable a("a");
@@ -37,7 +37,7 @@ HybridIOAutomaton getSystem(
 	RealParameter pmin("pmin", pmin_val);
 	RealParameter pmax("pmax", pmax_val);
 	RealParameter delta("delta", 0.1);
-	RealParameter midday("midday", 10);
+	RealParameter midday("midday", 12);
 
 	//Initial states
 	DiscreteLocation flow("flow");
@@ -59,7 +59,8 @@ HybridIOAutomaton getSystem(
 
 	// Automaton registration
 	HybridIOAutomaton hydropower = hydropower::getSystem(a, b, l, p, alpha, beta, psi, gamma, epsilon, flow);
-	HybridIOAutomaton city = city::getSystem(b, day, night, consuming, saving, midday);
+	RealVariable time("time");
+	HybridIOAutomaton city = city::getSystem(b, time, day, night, consuming, saving, midday);
 
 	//------------ Water valve ------------
 	HybridIOAutomaton w_valve = WaterValve::getSystem(a, T, e_a_open, e_a_close, a_idle);
