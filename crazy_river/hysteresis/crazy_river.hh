@@ -41,15 +41,15 @@ HybridIOAutomaton getSystem(
 
 	// Tanks
 	DiscreteLocation no_overflow("no_overflow");
-	HybridIOAutomaton crazy_river = CrazyRiver::getSystem(a, z1, z2, z4,beta1, gamma1, gamma2, T,delta, H1, H2, no_overflow);
+	HybridIOAutomaton crazy_river = crazy_river::getSystem(a, z1, z2, z4,beta1, gamma1, gamma2, T,delta, H1, H2, no_overflow);
 
 	//-------- Input valve --------
 	DiscreteLocation idle("idle");
-	HybridIOAutomaton valve_in = Valve::getSystem(a, T, e_open, e_close, idle);
+	HybridIOAutomaton valve_in = valve::getSystem(a, T, e_open, e_close, idle);
 
 	// Controller
 	DiscreteLocation rising("rising");
-	HybridIOAutomaton controller_valve = Controller::getSystem(z1, z2, hmin, H2, delta, e_open, e_close, rising);
+	HybridIOAutomaton controller_valve = controller::getSystem(z1, z2, hmin, H2, delta, e_open, e_close, rising);
 
 	HybridIOAutomaton tank_valve = compose("tanks,valve", crazy_river, valve_in, no_overflow, idle);
 	HybridIOAutomaton system = compose("crazy_river", tank_valve, controller_valve, DiscreteLocation("no_overflow,idle"), rising);

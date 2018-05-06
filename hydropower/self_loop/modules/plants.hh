@@ -17,28 +17,28 @@ HybridIOAutomaton getSystem(
 	DiscreteLocation flow)
 {
 	// Automaton registration
-	HybridIOAutomaton hydropower("hydropower");
+	HybridIOAutomaton system("hydropower");
 
 	//Registration of variables
-	hydropower.add_input_var(a);
-	hydropower.add_input_var(b);
-	hydropower.add_output_var(l);
-	hydropower.add_output_var(p);
+	system.add_input_var(a);
+	system.add_input_var(b);
+	system.add_output_var(l);
+	system.add_output_var(p);
 
 	RealVariable tempo("0");
-	hydropower.add_output_var(tempo);
+	system.add_output_var(tempo);
 	//Registration of events
 	//NO events
 
 	//Registration of locations
-	hydropower.new_mode(flow);
+	system.new_mode(flow);
 
 	//Registration of dynamics
-	hydropower.set_dynamics(flow, l, -alpha * a * l + epsilon);
-	hydropower.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
-	hydropower.set_dynamics(flow, tempo, 1);
+	system.set_dynamics(flow, l, -alpha * a * l + epsilon);
+	system.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
+	system.set_dynamics(flow, tempo, 1);
 
-	return hydropower;
+	return system;
 }
 }
 namespace city

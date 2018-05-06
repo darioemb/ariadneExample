@@ -4,70 +4,55 @@
 #pragma once
 #include <ariadne.h>
 #include "controllers.hh"
-#include "tanks.hh"
+#include "plants.hh"
 #include "valves.hh"
 namespace Ariadne
 {
 HybridIOAutomaton getSystem(
-	double alpha1_val = 0.02, 
-	double beta1_val = 0.03, 
-	double beta2_val = 0.03, 
-	double gamma1_val = 0.02, 
-	double gamma2_val = 0.02,
-	double T_val = 4.0, 
-	double hmin_val = 1.0, 
-	double hmax_val = 2.0, 
-	double delta_val = 0.1, 
-	double H1_val = 1.90, 
-	double H2_val = 1.90,
+	double alpha_val = 0.0004,
+	double beta_val = 0.004,
+	double gamma_val = 0.004,
+	double delta_val = 0.01,
+	double tau_val = 1.25,
+	double H_val = 2.0,
+	double Kp_val = 1.0,
 	double stormySize_val = 1.0,
-	double treshold_val = 10.0)
+	double treshold_val = 10.0,
+	double T_val = 4.0)
 {
 	//System variables
 	RealVariable a("a");
-	RealVariable z1("z1");
-	RealVariable z2("z2");
-	RealVariable z4("z4");
+	RealVariable z("z");
+	RealVariable d("d");
 	RealVariable w("w");
 
 	//System parameters
-	RealParameter alpha1("alpha1", alpha1_val);
-	RealParameter beta1("beta1", beta1_val);
-	RealParameter beta2("beta2", beta2_val);
-	RealParameter gamma1("gamma1", gamma1_val);
-	RealParameter gamma2("gamma2", gamma2_val);
-	RealParameter T("T", T_val);
-	RealParameter hmin("hmin", hmin_val);
-	RealParameter hmax("hmax", hmax_val);
+	RealParameter alpha("alpha", alpha_val);
+	RealParameter beta("beta", beta_val);
+	RealParameter gamma("gamma", gamma_val);
 	RealParameter delta("delta", delta_val);
-	RealParameter H1("H1", H1_val);
-	RealParameter H2("H2", H2_val);
-	RealParameter stormySize("stormySize",stormySize_val);
-	RealParameter treshold("treshold",treshold_val);
+	RealParameter T("T", T_val);
+	RealParameter H("H", H_val);
+	RealParameter treshold("treshold", treshold_val);
+	RealParameter Kp("Kp",Kp_val);
+	RealParameter tau("tau",tau_val);
 
 	DiscreteEvent e_open("open");
 	DiscreteEvent e_close("close");
-	DiscreteEvent sunny("sunny");
+	DiscreteEvent sunny("sunny");//TODO: delete this
 
-	// Tanks
-	DiscreteLocation S0("S0");
-	HybridIOAutomaton crazy_river = ScotlandIssue::getSystem(a, z1, z2, z4, w, alpha1, beta1, beta2, gamma1, gamma2, T, hmin, hmax, delta, H1, H2, stormySize, S0);
+	DiscreteLocation no_overflow("no_overflow");
+	HybridIOAutomaton tanks = scotland_issue::getSystem(a,d,w,z,alpha,beta,gamma,H,no_overflow);
 
 	DiscreteLocation tick("tick");
-	HybridIOAutomaton tick_s = StormyWeather::getSystem(w, sunny, tick, treshold);
+	HybridIOAutomaton weather = stormy_weather::getSystem(w,sunny,tick,treshold);
 
-	//-------- Input valve --------
-	DiscreteLocation idle("idle");
-	HybridIOAutomaton valve_in = Valve::getSystem(a, T, e_open, e_close, idle);
+	DiscreteLocation stabilizing("stabilizing");
+	HybridIOAutomaton controller = controller_proportional::getSystem(a,z,delta,Kp,H,tau,stabilizing);
 
-	// Controller
-	DiscreteLocation rising("rising");
-	HybridIOAutomaton controller_valve = Controller::getSystem(z1, z2, hmin, H2, delta, e_open, e_close, rising);
-
-	HybridIOAutomaton tank_valve = compose("tanks,valve", crazy_river, valve_in, S0, idle);
-	HybridIOAutomaton tick_valve = compose("tick_valve",tank_valve, tick_s, DiscreteLocation("S0,idle"), tick);
-	HybridIOAutomaton system = compose("scotland_issue", tick_valve, controller_valve, DiscreteLocation("S0,idle,tick"), rising);
-
+	HybridIOAutomaton scotland = compose("scotland",tanks,weather,no_overflow,tick);
+	HybridIOAutomaton system = compose("scotland_issue",scotland,controller,DiscreteLocation("no_overflow,tick"),stabilizing);
+	
 	return system;
 }
 }

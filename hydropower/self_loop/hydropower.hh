@@ -63,11 +63,11 @@ HybridIOAutomaton getSystem(
 	HybridIOAutomaton city = city::getSystem(b, time, day, night, consuming, saving, midday);
 
 	//------------ Water valve ------------
-	HybridIOAutomaton w_valve = WaterValve::getSystem(a, T, e_a_open, e_a_close, a_idle);
+	HybridIOAutomaton w_valve = water_valve::getSystem(a, T, e_a_open, e_a_close, a_idle);
 
 	//-------- Water valve controller --------
 	//Automaton
-	HybridIOAutomaton w_controller = WaterController::getSystem(p, pmin, pmax, delta, e_a_open, e_a_close, p_falling);
+	HybridIOAutomaton w_controller = power_controller::getSystem(p, pmin, pmax, delta, e_a_open, e_a_close, p_falling);
 
 	//Composition
 	HybridIOAutomaton hydropower_valve = compose("hydropower,valve", hydropower, w_valve, flow, a_idle);

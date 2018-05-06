@@ -1,7 +1,7 @@
 #pragma once
 #include <ariadne.h>
 
-namespace WaterValve
+namespace water_valve
 {
 HybridIOAutomaton getSystem(
 	RealVariable a, 
@@ -10,29 +10,29 @@ HybridIOAutomaton getSystem(
 	DiscreteEvent e_a_close, 
 	DiscreteLocation a_idle)
 {
-    HybridIOAutomaton valve("w_valve");
+    HybridIOAutomaton system("w_valve");
 
-	valve.add_output_var(a);
+	system.add_output_var(a);
 
 	//Registration of input/output internal events
 	DiscreteEvent e_a_idle("a_idle");
 
-	valve.add_input_event(e_a_open);
-	valve.add_input_event(e_a_close);
-	valve.add_internal_event(e_a_idle);
+	system.add_input_event(e_a_open);
+	system.add_input_event(e_a_close);
+	system.add_internal_event(e_a_idle);
 
 	//Registration of locations
 	DiscreteLocation a_opening("a_opening");
 	DiscreteLocation a_closing("a_closing");
 
-	valve.new_mode(a_opening);
-	valve.new_mode(a_idle);
-	valve.new_mode(a_closing);
+	system.new_mode(a_opening);
+	system.new_mode(a_idle);
+	system.new_mode(a_closing);
 
 	//Registration of dynamics
-	valve.set_dynamics(a_idle, a, 0.0);
-	valve.set_dynamics(a_closing, a, -1.0 / T);
-	valve.set_dynamics(a_opening, a, 1.0 / T);
+	system.set_dynamics(a_idle, a, 0.0);
+	system.set_dynamics(a_closing, a, -1.0 / T);
+	system.set_dynamics(a_opening, a, 1.0 / T);
 
 	//Registration of transitions
 	// Guards
@@ -45,13 +45,13 @@ HybridIOAutomaton getSystem(
 	std::map<RealVariable, RealExpression> rst_a_zero;
 	rst_a_zero[a] = 0.0; // a = 0
 
-	valve.new_forced_transition(e_a_idle, a_opening, a_idle, rst_a_one, a_geq_one);
-	valve.new_forced_transition(e_a_idle, a_closing, a_idle, rst_a_zero, a_leq_zero);
+	system.new_forced_transition(e_a_idle, a_opening, a_idle, rst_a_one, a_geq_one);
+	system.new_forced_transition(e_a_idle, a_closing, a_idle, rst_a_zero, a_leq_zero);
 
-	valve.new_unforced_transition(e_a_open, a_idle, a_opening);
-	valve.new_unforced_transition(e_a_close, a_idle, a_closing);
+	system.new_unforced_transition(e_a_open, a_idle, a_opening);
+	system.new_unforced_transition(e_a_close, a_idle, a_closing);
 
 
-    return valve;
+    return system;
 }
 }
