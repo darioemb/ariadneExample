@@ -46,15 +46,16 @@ HybridConstraintSet getSafetyConstraint(HybridAutomatonInterface &system);
 // to focus on specific ones.
 void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initial_set, int verbosity, bool plot_results)
 {
-    // cout << "1/6: Finite time upper evolution... " << endl
-        //  << flush;
-    // finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
-    // cout << "2/6: Finite time lower evolution... " << endl
-        //  << flush;
-    // finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
-    // cout << "3/6: Infinite time outer evolution... " << endl
-        //  << flush;
-    // infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
+    cout << "1/6: Finite time upper evolution... " << endl
+         << flush;
+    finite_time_upper_evolution(system, initial_set, verbosity, plot_results);
+    cout << "2/6: Finite time lower evolution... " << endl
+         << flush;
+    finite_time_lower_evolution(system, initial_set, verbosity, plot_results);
+    /*
+    cout << "3/6: Infinite time outer evolution... " << endl
+         << flush;
+    infinite_time_outer_evolution(system,initial_set,verbosity,plot_results);
     cout << "4/6: Infinite time lower evolution... " << endl
          << flush;
     infinite_time_epsilon_lower_evolution(system, initial_set, verbosity, plot_results);
@@ -64,6 +65,7 @@ void analyse(HybridAutomatonInterface &system, HybridBoundedConstraintSet &initi
     cout << "6/6: Parametric safety verification... " << endl
          << flush;
     parametric_safety_verification(system, initial_set, verbosity, plot_results);
+    */
 }
 
 // Performs finite time evolution.
@@ -89,7 +91,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(200.0, 40);
+    HybridTime evol_limits(20.0, 20);
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;
@@ -140,7 +142,7 @@ void infinite_time_outer_evolution(HybridAutomatonInterface &system, HybridBound
     HybridBoxes domain(system.state_space(), Box(3, 0.0,1.0, 1.0,3.0, 1.0,3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
-    int accuracy = 1;
+    int accuracy = 3;
 
     // Creates an analyser with the required arguments
     HybridReachabilityAnalyser analyser(system, domain, accuracy);
@@ -162,11 +164,10 @@ void infinite_time_epsilon_lower_evolution(HybridAutomatonInterface &system, Hyb
 {
 
     // Creates the domain, necessary to guarantee termination for infinite-time evolution
-    HybridBoxes domain(system.state_space(), Box(2, 0.0, 1.0, 0.0, 5.0));
-    
+    HybridBoxes domain(system.state_space(), Box(3, 0.0, 1.0, 0.5, 3.0, 0.5, 3.0));
 
     // The accuracy of computation in terms of discretization; the larger, the smaller the grid cells used
-    int accuracy = 6;
+    int accuracy = 3;
 
     // Creates an analyser with the required arguments
     HybridReachabilityAnalyser analyser(system, domain, accuracy);
