@@ -28,14 +28,6 @@ HybridIOAutomaton getSystem(
 	system.new_mode(p_rising);
 	system.new_mode(p_falling);
 
-	// 5.Transitions
-	// Invariants
-	// RealExpression p_geq_pmin = (pmin - p);
-	// RealExpression p_leq_pmax = (p - pmax); // x <= pmax
-
-	// system.new_invariant(p_rising, p_leq_pmax);
-	// system.new_invariant(p_falling, p_geq_pmin);
-
 	//Guards
 	RealExpression p_geq_pmax = (p - pmax);
 	RealExpression p_leq_pmin = (pmin - p);

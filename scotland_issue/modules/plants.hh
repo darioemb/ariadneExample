@@ -75,12 +75,14 @@ HybridIOAutomaton getSystem(
     // 4.Registration of Locations
     system.new_mode(tick);
 
+    RealParameter c("c",0.5);
+
     // 5.Registration of dynamics
-    system.set_dynamics(tick, w, 1);
+    system.set_dynamics(tick, w, w*c);
     system.set_dynamics(tick, time, 1);
 
     std::map<RealVariable, RealExpression> reset;
-    reset[w] = 0;
+    reset[w] = 0.0001;
     reset[time] = time;
 
     RealExpression guard_sunny = w - treshold; //!< w>=treshold

@@ -35,7 +35,7 @@ HybridIOAutomaton getSystem(
 
 	//Registration of dynamics
 	system.set_dynamics(flow, l, -alpha * a * l + epsilon);
-	system.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
+	system.set_dynamics(flow, p, alpha * psi * a - beta * b);
 	system.set_dynamics(flow, tempo, 1);
 
 	return system;
@@ -68,8 +68,8 @@ HybridIOAutomaton getSystem(
 
 	//Registration of dynamics
 
-	RealParameter c("c",0.5);
-	RealExpression e_t =b*c; // this will be traduced in z(t)=c*e^t
+	RealParameter c("c",0.6);
+	RealExpression e_t =c*b; // this will be traduced in z(t)=e^(c*t)
 
 	city.set_dynamics(day, b, e_t);
 	city.set_dynamics(night, b, -e_t);
@@ -81,7 +81,7 @@ HybridIOAutomaton getSystem(
 	reset[time] = time;
 
 	std::map<RealVariable, RealExpression> reset_0;
-	reset_0[b] = b;
+	reset_0[b] = 0.1;
 	reset_0[time] = 0.0;
 
 	RealExpression midday = time - midday_v; //!< w>=treshold

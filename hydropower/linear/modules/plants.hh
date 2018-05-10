@@ -37,7 +37,7 @@ HybridIOAutomaton getSystem(
 
 	//Registration of dynamics
 	system.set_dynamics(flow, l, -alpha * a * l + epsilon);
-	system.set_dynamics(flow, p, alpha * psi * a - beta * b * p);
+	system.set_dynamics(flow, p, alpha * psi * a - beta * b);
 	system.set_dynamics(flow, tempo, 1);
 
     return system;
@@ -69,8 +69,8 @@ HybridIOAutomaton getSystem(
 	city.new_mode(night);
 
 	//Registration of dynamics
-	city.set_dynamics(day, b, 0.5);
-	city.set_dynamics(night,b,-0.5);
+	city.set_dynamics(day, b, 1.0);
+	city.set_dynamics(night,b,-1.0);
 	city.set_dynamics(day,time,1.0);
 	city.set_dynamics(night,time,1.0);
 

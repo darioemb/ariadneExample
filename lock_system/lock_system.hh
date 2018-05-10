@@ -15,7 +15,7 @@ HybridIOAutomaton getSystem(
 	double riverLevel_val = 1.0, 
 	double kp_val = 1.0,
 	double tau_val = 1.25,
-	double thr_val = 4.15,
+	double thr_val = 5.0,
 	double targetLevel_val = 4.0,
 	double delta_val = 0.00)
 {
