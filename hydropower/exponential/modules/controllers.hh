@@ -4,16 +4,17 @@
 namespace power_controller
 {
 HybridIOAutomaton getSystem(
-	RealVariable p, 
-	RealParameter pmin, 
-	RealParameter pmax, 
-	RealParameter delta, 
-	DiscreteEvent e_a_open, 
-	DiscreteEvent e_a_close, 
-	DiscreteLocation p_falling)
+	RealVariable 		p, 
+	RealParameter 		pmin, 
+	RealParameter 		pmax, 
+	RealParameter 		delta, 
+	DiscreteEvent 		e_a_open, 
+	DiscreteEvent 		e_a_close, 
+	DiscreteLocation 	p_falling)
 {
   	// 1.Automaton
-	HybridIOAutomaton system("p_controller");
+	HybridIOAutomaton 	system("p_controller");
+	DiscreteLocation 	p_rising("p_rising");
 
 	// 2.Registration of the input/output variables
 	system.add_input_var(p);
@@ -23,7 +24,6 @@ HybridIOAutomaton getSystem(
 	system.add_output_event(e_a_close);
 
 	// 4.Registration of the locations
-	DiscreteLocation p_rising("p_rising");
 
 	system.new_mode(p_rising);
 	system.new_mode(p_falling);

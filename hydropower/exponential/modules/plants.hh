@@ -17,7 +17,8 @@ HybridIOAutomaton getSystem(
 	DiscreteLocation flow)
 {
 	// Automaton registration
-	HybridIOAutomaton system("hydropower");
+	HybridIOAutomaton 	system("hydropower");
+	RealVariable 		tempo("0");
 
 	//Registration of variables
 	system.add_input_var(a);
@@ -25,11 +26,7 @@ HybridIOAutomaton getSystem(
 	system.add_output_var(l);
 	system.add_output_var(p);
 
-	RealVariable tempo("0");
 	system.add_output_var(tempo);
-	//Registration of events
-	//NO events
-
 	//Registration of locations
 	system.new_mode(flow);
 
@@ -44,16 +41,25 @@ HybridIOAutomaton getSystem(
 namespace city
 {
 HybridIOAutomaton getSystem(
-	RealVariable b,
-	RealVariable time,
-	DiscreteLocation day,
-	DiscreteLocation night,
-	DiscreteEvent consuming,
-	DiscreteEvent saving,
-	RealParameter midday_v)
+	RealVariable 		b,
+	RealVariable 		time,
+	DiscreteLocation 	day,
+	DiscreteLocation 	night,
+	DiscreteEvent 		consuming,
+	DiscreteEvent 		saving,
+	RealParameter 		midday_v)
 {
-	// Automaton registration
-	HybridIOAutomaton city("city");
+	HybridIOAutomaton 						city("city");
+	///Guards
+	RealExpression 							midday = time - midday_v; //!< w>=treshold
+	RealExpression 							midnight = time - (2 * midday_v);
+	///Resets
+	std::map<RealVariable, RealExpression> 	reset;
+	std::map<RealVariable, RealExpression> 	reset_0;
+	///City dynamic
+	RealParameter 							c("c",0.4);
+	RealExpression 							e_t =c*b; // this will be traduced in z(t)=e^(c*t)
+
 
 	//Registration of variables
 	city.add_output_var(b);
@@ -67,25 +73,17 @@ HybridIOAutomaton getSystem(
 	city.new_mode(night);
 
 	//Registration of dynamics
-
-	RealParameter c("c",0.6);
-	RealExpression e_t =c*b; // this will be traduced in z(t)=e^(c*t)
-
 	city.set_dynamics(day, b, e_t);
 	city.set_dynamics(night, b, -e_t);
 	city.set_dynamics(day, time, 1);
 	city.set_dynamics(night, time, 1);
 
-	std::map<RealVariable, RealExpression> reset;
+	///Resets
 	reset[b] = b;
 	reset[time] = time;
-
-	std::map<RealVariable, RealExpression> reset_0;
 	reset_0[b] = 0.1;
 	reset_0[time] = 0.0;
 
-	RealExpression midday = time - midday_v; //!< w>=treshold
-	RealExpression midnight = time - (2 * midday_v);
 
 	city.new_forced_transition(saving, night, day, reset_0, midnight);
 	city.new_forced_transition(consuming, day, night, reset, midday);
