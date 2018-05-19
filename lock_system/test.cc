@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
-    initial_set[DiscreteLocation("passon,opening")] = Box(4, 0.0,0.0, 0.0,0.0, 0.0,0.0, 1.0,1.0 );
+    initial_set[DiscreteLocation("passon,opening")] = Box(5, 0.0,0.0, 0.0,0.0, 0.0,0.0, 0.0,0.0, 1.0,1.0 );
 
 
     analyse(system, initial_set, verb, plot_results);

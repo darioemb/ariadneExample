@@ -14,10 +14,6 @@ HybridIOAutomaton getSystem(
 	RealParameter delta, 
 	DiscreteEvent z_leq_riverLevel, 
 	DiscreteLocation stabilizing)
-  
-
-
-
 {
   HybridIOAutomaton controller("controller");
 
@@ -25,9 +21,11 @@ HybridIOAutomaton getSystem(
   DiscreteLocation closing("closing");
   DiscreteLocation idle("idle");
 
+  RealVariable consumption("consumption");
   //t try with internal var
   controller.add_output_var(a);
   controller.add_output_var(t);
+  controller.add_output_var(consumption);
   controller.add_input_var(z);
 
 
@@ -57,6 +55,11 @@ HybridIOAutomaton getSystem(
   controller.set_dynamics(stabilizing, a, (kp*(ref-z)-a)/tau);
   controller.set_dynamics(idle, a, 0);
 
+  controller.set_dynamics(opening, consumption, a*2);
+  controller.set_dynamics(closing, consumption, a*2);
+  controller.set_dynamics(stabilizing, consumption, a*2);
+  controller.set_dynamics(idle, consumption, 0);
+
   controller.set_dynamics(opening, t, 1);
   controller.set_dynamics(closing, t, 1);
   controller.set_dynamics(stabilizing, t, 1);
@@ -71,12 +74,12 @@ HybridIOAutomaton getSystem(
   std::map<RealVariable, RealExpression> reset;
   reset[a] = 0.0;
   reset[t] = 0.0;
-
+  reset[consumption]=consumption;
 
   RealExpression guard_z_riverLevel = -z+1.0;
 
-  DiscreteEvent tmp("tmp");
-  controller.add_internal_event(tmp);
+  DiscreteEvent sensor_base_level("sensor_base_level");
+  controller.add_internal_event(sensor_base_level);
 
 
   controller.new_forced_transition(z_geq_ref_min_kp, opening, stabilizing, guard_z_geq_ref_min_kp);
@@ -89,7 +92,7 @@ HybridIOAutomaton getSystem(
   
 
   //maybe unforced
-  controller.new_forced_transition(tmp, idle, opening, guard_z_riverLevel);
+  controller.new_forced_transition(sensor_base_level, idle, opening, guard_z_riverLevel);
 
   return controller;
 }
