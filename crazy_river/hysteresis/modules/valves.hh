@@ -6,8 +6,12 @@ namespace valve
 HybridIOAutomaton getSystem(
     RealVariable a, 
     RealParameter T, 
-    DiscreteEvent e_open,
-    DiscreteEvent e_close, 
+    DiscreteEvent e_open1,
+    DiscreteEvent e_close1,
+    DiscreteEvent e_open2,
+    DiscreteEvent e_close2,
+    DiscreteEvent e_opend,
+    DiscreteEvent e_closed, 
     DiscreteLocation idle)
 {
     // 1.Automaton registration
@@ -19,8 +23,12 @@ HybridIOAutomaton getSystem(
     // 3.Registration of input/output internal events
     DiscreteEvent e_idle("e_idle");
 
-    system.add_input_event(e_open);
-    system.add_input_event(e_close);
+    system.add_input_event(e_open1);
+    system.add_input_event(e_close1);
+    system.add_input_event(e_open2);
+    system.add_input_event(e_close2);
+    system.add_input_event(e_opend);
+    system.add_input_event(e_closed);
     system.add_internal_event(e_idle);
 
     // 4.Registration of locations
@@ -50,8 +58,12 @@ HybridIOAutomaton getSystem(
     system.new_forced_transition(e_idle, opening, idle, rst_a_one, a_geq_one);
     system.new_forced_transition(e_idle, closing, idle, rst_a_zero, a_leq_zero);
 
-    system.new_unforced_transition(e_open, idle, opening);
-    system.new_unforced_transition(e_close, idle, closing);
+    system.new_unforced_transition(e_open1, idle, opening);
+    system.new_unforced_transition(e_close1, idle, closing);
+    system.new_unforced_transition(e_open2, idle, opening);
+    system.new_unforced_transition(e_close2, idle, closing);
+    system.new_unforced_transition(e_opend, idle, opening);
+    system.new_unforced_transition(e_closed, idle, closing);
 
     return system;
 }
