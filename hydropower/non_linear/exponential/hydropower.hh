@@ -2,31 +2,34 @@
  * @author: Nicola Dessi'
  */
 #pragma once
+
 #include "controllers.hh"
 #include "plants.hh"
 #include "valves.hh"
 
 #include <ariadne.h>
+
 namespace Ariadne
 {
 HybridIOAutomaton getSystem(
-	double g = 9.81, 
-	double eta = 0.85, 
-	double h = 10.0, 
-	double rho = 1000.0, 
-	double alpha_val = 0.001, 
-	double beta_val = 1.0, 
-	double epsilon_val = 0.2, 
-	double gamma_val = 0.01, 
-	double T_val = 2.0, 
-	double pmin_val = 360.0, 
-	double pmax_val = 600.0)
+	double g = 9.81,
+	double eta = 0.85,
+	double h = 10.0,
+	double rho = 1000.0,
+	double alpha_val = 0.1,
+	double beta_val = 1.0,
+	double epsilon_val = 0.2,
+	double gamma_val = 0.01,
+	double T_val = 2.0,
+	double pmin_val = 30000.0,
+	double pmax_val = 100000.0)
 {
 	///System variables
 	RealVariable 		a("a");
 	RealVariable 		b("b");
 	RealVariable 		l("l");
 	RealVariable 		p("p");
+	RealVariable 		time("time");
 	///System parameters
 	RealParameter 		alpha("alpha", alpha_val);
 	RealParameter 		beta("beta", beta_val);
@@ -55,23 +58,21 @@ HybridIOAutomaton getSystem(
 	DiscreteEvent 		saving("saving");
 	DiscreteEvent 		consuming("consuming");
 
-	// Automaton registration
+	///Automaton registration
 	HybridIOAutomaton hydropower = hydropower::getSystem(a, b, l, p, alpha, beta, psi, gamma, epsilon, flow);
-	RealVariable time("time");
-	HybridIOAutomaton city = city::getSystem(b,time, day, night, consuming, saving, midday);
+	HybridIOAutomaton city = city::getSystem(b, time, day, night, consuming, saving, midday);
 
-	//------------ Water valve ------------
+	///Water valve
 	HybridIOAutomaton w_valve = water_valve::getSystem(a, T, e_a_open, e_a_close, a_idle);
 
-	//-------- Water valve controller --------
-	//Automaton
+	//Water controller
 	HybridIOAutomaton w_controller = power_controller::getSystem(p, pmin, pmax, delta, e_a_open, e_a_close, p_falling);
 
-	//Composition
+	///Composition
 	HybridIOAutomaton hydropower_valve = compose("hydropower,valve", hydropower, w_valve, flow, a_idle);
 	HybridIOAutomaton hydropower_valve_controller = compose("hydropower,valve,controller", hydropower_valve, w_controller, DiscreteLocation("flow,a_idle"), p_falling);
 	HybridIOAutomaton system = compose("hydropower", hydropower_valve_controller, city, DiscreteLocation("flow,a_idle,p_falling"), day);
 
 	return system;
 }
-}
+} //namespace Ariadne

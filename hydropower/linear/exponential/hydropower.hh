@@ -16,13 +16,13 @@ HybridIOAutomaton getSystem(
 	double eta = 0.85,
 	double h = 10.0,
 	double rho = 1000.0,
-	double alpha_val = 0.0001,
+	double alpha_val = 0.1,
 	double beta_val = 1.0,
 	double epsilon_val = 0.2,
 	double gamma_val = 0.01,
 	double T_val = 2.0,
-	double pmin_val = 360.0,
-	double pmax_val = 550.0)
+	double pmin_val = 30000.0,
+	double pmax_val = 100000.0)
 {
 	///System variables
 	RealVariable 		a("a");

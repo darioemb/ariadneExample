@@ -57,8 +57,8 @@ HybridIOAutomaton getSystem(
 	std::map<RealVariable, RealExpression> 	reset;
 	std::map<RealVariable, RealExpression> 	reset_0;
 	///City dynamic
-	RealParameter 							c("c",0.4);
-	RealExpression 							e_t =c*b; // this will be traduced in z(t)=e^(c*t)
+	RealParameter 							c("c",1.0);
+	RealExpression 							e_t =c*(b*b/2); // this will be traduced in z(t)=e^(c*t)
 
 
 	//Registration of variables

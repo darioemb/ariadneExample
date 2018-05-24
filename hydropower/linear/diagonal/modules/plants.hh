@@ -30,6 +30,7 @@ HybridIOAutomaton getSystem(
 	//Registration of locations
 	system.new_mode(flow);
 
+
 	//Registration of dynamics
 	system.set_dynamics(flow, l, -alpha * a * l + epsilon);
 	system.set_dynamics(flow, p, alpha * psi * a - beta * b);
@@ -68,9 +69,11 @@ HybridIOAutomaton getSystem(
 	city.new_mode(day);
 	city.new_mode(night);
 
+	RealParameter c("c",10.0);
+
 	//Registration of dynamics
-	city.set_dynamics(day, b, 1.0);
-	city.set_dynamics(night,b,-1.0);
+	city.set_dynamics(day, b, 1.0*c);
+	city.set_dynamics(night,b,-1.0*c);
 	city.set_dynamics(day,time,1.0);
 	city.set_dynamics(night,time,1.0);
 

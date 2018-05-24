@@ -76,10 +76,6 @@ HybridIOAutomaton getSystem(
   reset[t] = 0.0;
   reset[consumption]=consumption;
 
-  RealExpression guard_z_riverLevel = -z+1.0;
-
-  DiscreteEvent sensor_base_level("sensor_base_level");
-  controller.add_internal_event(sensor_base_level);
 
 
   controller.new_forced_transition(z_geq_ref_min_kp, opening, stabilizing, guard_z_geq_ref_min_kp);
@@ -92,7 +88,11 @@ HybridIOAutomaton getSystem(
   
 
   //maybe unforced
+  RealExpression guard_z_riverLevel = -z+1.0;
+  DiscreteEvent sensor_base_level("sensor_base_level");
+  controller.add_internal_event(sensor_base_level);
   controller.new_forced_transition(sensor_base_level, idle, opening, guard_z_riverLevel);
+  // controller.new_unforced_transition(z_leq_riverLevel, idle, opening);
 
   return controller;
 }
