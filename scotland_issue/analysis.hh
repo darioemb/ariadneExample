@@ -74,7 +74,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
     // Creates an evolver
     HybridEvolver evolver(system);
     evolver.verbosity = verbosity;
-    evolver.settings().set_maximum_step_size(0.5); // The time step size to be used
+    evolver.settings().set_maximum_step_size(0.01); // The time step size to be used
 
     // Creates a list of initial enclosures from the initial set.
     // This operation is only necessary since we provided an initial set expressed as a constraint set
@@ -90,7 +90,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
 
     // The maximum evolution time, expressed as a continuous time limit along with a maximum number of events
     // The evolution stops for each trajectory as soon as one of the two limits are reached
-    HybridTime evol_limits(39.0, 30);
+    HybridTime evol_limits(15.0, 30);
 
     // Performs the evolution, saving only the reached set of the orbit
     HybridEvolver::EnclosureListType result;

@@ -56,7 +56,7 @@ namespace stormy_weather
 HybridIOAutomaton getSystem(
     RealVariable w,
     DiscreteEvent sunny,
-    DiscreteLocation tick,
+    DiscreteLocation storm,
     RealParameter treshold)
 {
     // 1.Automaton registration
@@ -70,24 +70,33 @@ HybridIOAutomaton getSystem(
     system.add_output_var(time);
 
     // 3.Registration of Events
+    DiscreteEvent stormy("stormy");
     system.add_output_event(sunny);
+    system.add_output_event(stormy);
 
     // 4.Registration of Locations
-    system.new_mode(tick);
+    DiscreteLocation sun("sun");
+    system.new_mode(storm);
+    system.new_mode(sun);
 
-    RealParameter c("c",0.5);
+    RealParameter c("c",1.0);
 
     // 5.Registration of dynamics
-    system.set_dynamics(tick, w, w*c);
-    system.set_dynamics(tick, time, 1);
+    system.set_dynamics(storm, w, c*(w+w*w));
+    system.set_dynamics(storm, time, 1);
+
+    system.set_dynamics(sun, w, -c*(w+w*w));
+    system.set_dynamics(sun, time, 1);
 
     std::map<RealVariable, RealExpression> reset;
-    reset[w] = 0.0001;
+    reset[w] = w;
     reset[time] = time;
 
     RealExpression guard_sunny = w - treshold; //!< w>=treshold
+    RealExpression guard_stormy = -w+0.2; //!< w>=treshold
 
-    system.new_forced_transition(sunny, tick, tick, reset, guard_sunny);
+    system.new_forced_transition(sunny, storm, sun, reset, guard_sunny);
+    system.new_forced_transition(stormy, sun, storm, reset, guard_stormy);
 
     return system;
 }
