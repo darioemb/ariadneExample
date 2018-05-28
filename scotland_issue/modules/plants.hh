@@ -93,7 +93,7 @@ HybridIOAutomaton getSystem(
     reset[time] = time;
 
     RealExpression guard_sunny = w - treshold; //!< w>=treshold
-    RealExpression guard_stormy = -w+0.2; //!< w>=treshold
+    RealExpression guard_stormy = -w+0.5; //!< w>=treshold
 
     system.new_forced_transition(sunny, storm, sun, reset, guard_sunny);
     system.new_forced_transition(stormy, sun, storm, reset, guard_stormy);

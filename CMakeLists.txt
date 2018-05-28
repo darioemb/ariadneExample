@@ -8,7 +8,6 @@ project(${PROJECT} CXX)
 
 add_subdirectory(hydropower/linear/diagonal)
 add_subdirectory(hydropower/linear/exponential)
-add_subdirectory(hydropower/non_linear/exponential)
 add_subdirectory(scotland_issue)
 add_subdirectory(crazy_river/hysteresis)
 add_subdirectory(lock_system)

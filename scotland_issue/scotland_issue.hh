@@ -11,9 +11,9 @@ namespace Ariadne
 HybridIOAutomaton getSystem(
 	double alpha_val = 0.4,
 	double beta_val = 0.8,
-	double gamma_val = 0.2,
-	double delta_val = 0.0,
-	double tau_val = 0.8,
+	double gamma_val = 0.4,
+	double delta_val = 0.1,
+	double tau_val = 1.2,
 	double H_val = 4.0,
 	double Kp_val = 10.0,
 	double stormySize_val = 1.0,

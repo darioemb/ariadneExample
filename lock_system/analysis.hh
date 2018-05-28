@@ -76,7 +76,7 @@ HybridEvolver::EnclosureListType _finite_time_evolution(HybridAutomatonInterface
     // Creates an evolver
     HybridEvolver evolver(system);
     evolver.verbosity = verbosity;
-    evolver.settings().set_maximum_step_size(0.65); // The time step size to be used
+    evolver.settings().set_maximum_step_size(0.1); // The time step size to be used
 
     // Creates a list of initial enclosures from the initial set.
     // This operation is only necessary since we provided an initial set expressed as a constraint set
