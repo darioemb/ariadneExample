@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
     HybridIOAutomaton system = Ariadne::getSystem();
 
-    cout << system << endl;
+    // cout << system << endl;
     
     HybridBoundedConstraintSet initial_set(system.state_space());    
     //with time fixed to first position

@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 
     HybridIOAutomaton system = Ariadne::getSystem();
 
-    cout << system << endl;
+    // cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
     initial_set[DiscreteLocation("no_overflow,tick,opening")] = Box(5, 0.0,0.0, 0.0,0.0, 3.0,3.0, 0.1,0.1, 1.0,1.0);

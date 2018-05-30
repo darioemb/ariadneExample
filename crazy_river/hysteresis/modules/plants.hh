@@ -21,14 +21,14 @@ HybridIOAutomaton getSystem(
     HybridIOAutomaton system("crazy_river");
 
     //tmp
-    RealVariable time("0");
+    // RealVariable time("0");
 
     // 2.Registration of input/output variables
     system.add_input_var(a);
     system.add_output_var(z1);
     system.add_output_var(z2);
     system.add_output_var(z4);
-    system.add_output_var(time);
+    // system.add_output_var(time);
 
     // 3.Registration of Events
     DiscreteEvent z1_geq_H1("z1_geq_H1");
@@ -55,23 +55,23 @@ HybridIOAutomaton getSystem(
     system.set_dynamics(no_overflow, z1, -gamma1 * z1 + beta1 * a * z4);
     system.set_dynamics(no_overflow, z2, -gamma2 * z2);
     system.set_dynamics(no_overflow, z4, gamma1 * z1 + gamma2 * z2 - beta1 * a * z4);
-    system.set_dynamics(no_overflow, time, 1);
+    // system.set_dynamics(no_overflow, time, 1);
     //overflow 1
     system.set_dynamics(overflow_1, z1, 0);
     system.set_dynamics(overflow_1, z2, -gamma2 * z2 + beta1 * a * z4 - gamma1 * z1);
     system.set_dynamics(overflow_1, z4, gamma1 * z1 + gamma2 * z2 - beta1 * a * z4);
-    system.set_dynamics(overflow_1, time, 1);
+    // system.set_dynamics(overflow_1, time, 1);
     //overflow 2
     system.set_dynamics(overflow_2, z1, beta1 * a * z4 - gamma1 * z1);
     system.set_dynamics(overflow_2, z2, 0);
     system.set_dynamics(overflow_2, z4, gamma1 * z1 + gamma2 * z2 - beta1 * a * z4);
-    system.set_dynamics(overflow_2, time, 1);
+    // system.set_dynamics(overflow_2, time, 1);
 
     //overflow 1,2
     system.set_dynamics(overflow_12, z1, 0);
     system.set_dynamics(overflow_12, z2, 0);
     system.set_dynamics(overflow_12, z4, gamma1 * z1 + gamma2 * z2 - beta1 * a * z4);
-    system.set_dynamics(overflow_12, time, 1);
+    // system.set_dynamics(overflow_12, time, 1);
 
     //guards
     RealExpression guard_z1_geq_H1 = z1 - H1; //!< z>=H
@@ -83,7 +83,7 @@ HybridIOAutomaton getSystem(
     reset[z1] = z1;
     reset[z2] = z2;
     reset[z4] = z4;
-    reset[time] = time;
+    // // reset[time] = time;
 
     system.new_forced_transition(z1_geq_H1, no_overflow, overflow_1, reset, guard_z1_geq_H1);
     system.new_forced_transition(z2_geq_H2, no_overflow, overflow_2, reset, guard_z2_geq_H2);

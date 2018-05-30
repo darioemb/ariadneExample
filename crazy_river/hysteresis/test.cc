@@ -12,11 +12,14 @@ int main(int argc, char **argv)
 
     HybridIOAutomaton system = Ariadne::getSystem();
 
-    cout << system << endl;
+    // cout << system << endl;
 
     HybridBoundedConstraintSet initial_set(system.state_space());
-    // initial_set[DiscreteLocation("S0,idle,rising")] = Box(5, 0.0,0.0, 1.0,1.0, 1.0,2.0, 1.0, 2.0, 1.0, 2.0);
-    initial_set[DiscreteLocation("no_overflow,idle,falling1,falling2,fallingd")] = Box(5, 0.0,0.0, 0.0,0.0, 1.5,2.0, 1.5,2.0, 1.5, 2.0);
+
+    /// Use to show time execution
+    // initial_set[DiscreteLocation("no_overflow,idle,falling1,falling2,fallingd")] = Box(5, 0.0,0.0, 0.0,0.0, 1.5,2.0, 1.5,2.0, 1.5, 2.0);
+
+    initial_set[DiscreteLocation("no_overflow,idle,falling1,falling2,fallingd")] = Box(4, 0.0,0.0, 1.5,2.0, 1.5,2.0, 1.5, 2.0);
 
     analyse(system, initial_set, verb, plot_results);
     return 0;
